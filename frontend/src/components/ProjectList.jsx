@@ -1,63 +1,69 @@
 // src/components/ProjectList.jsx
 import { useEffect, useState } from 'react';
-import { api } from '../services/api';
-import { FaFileDownload } from 'react-icons/fa'; // Você precisará instalar: npm install react-icons
+import { artigoService } from '../services/artigoService';
+import { FaFileDownload } from 'react-icons/fa';
 
 function ProjectList() {
-  const [projects, setProjects] = useState([]);
+  const [artigos, setArtigos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchProjects() {
-      const response = await api.get('/projects');
-      setProjects(response.data);
+    async function fetchArtigos() {
+      try {
+        setLoading(true);
+        const data = await artigoService.getAll();
+        setArtigos(data);
+        setError(null);
+      } catch (err) {
+        setError('Erro ao carregar os artigos. Por favor, tente novamente mais tarde.');
+        console.error('Erro ao carregar artigos:', err);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    fetchProjects();
+    fetchArtigos();
   }, []);
+
+  if (loading) {
+    return <div className="loading">Carregando...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
     <div className="content-section">
-      <h2 className="section-title">Informática para internet</h2>
+      <h2 className="section-title">Artigos</h2>
       <div className="project-list">
-        {projects.map(project => (
-          <div key={project.id} className="project-item">
-            <h2>{project.titulo}</h2>
-            <p>{project.descricao}</p>
+        {artigos.map(artigo => (
+          <div key={artigo.id_artigo} className="project-item">
+            <h2>{artigo.titulo}</h2>
             <div className="project-meta">
-              <p><strong>Autor:</strong> {project.autor}</p>
-              <p><strong>Ano:</strong> {project.ano}</p>
+              <p><strong>Ano:</strong> {artigo.ano}</p>
+              <p><strong>Palavras-chave:</strong> {artigo.palavra_chave}</p>
             </div>
-            <a href="#download" className="download-link">
-              <FaFileDownload />
-            </a>
+            <div className="authors">
+              {artigo.Autores && artigo.Autores.map(autor => (
+                <p key={autor.id_autor}>
+                  {autor.nome} ({autor.tipo})
+                </p>
+              ))}
+            </div>
+            {artigo.link && (
+              <a href={artigo.link} className="download-link" target="_blank" rel="noopener noreferrer">
+                <FaFileDownload /> Acessar Artigo
+              </a>
+            )}
           </div>
         ))}
         
-        {/* Exemplos estáticos baseados na imagem de referência */}
-        {projects.length === 0 && (
-          <>
-            <div className="project-item">
-              <h2>DISPOSITIVO DE SEGURANÇA NO DESCARREGAMENTO DE CEREAIS</h2>
-              <p>Trabalho desenvolvido para melhorar a segurança no processo de descarregamento de cereais.</p>
-              <div className="authors">
-                <p>Erika Vanessa Teixeira da Mota, Natally Sidney Ribeiro da Souza, Luiz Henrique Menezes Van Mecheln</p>
-              </div>
-              <a href="#download" className="download-link">
-                <FaFileDownload />
-              </a>
-            </div>
-            
-            <div className="project-item">
-              <h2>DESENVOLVIMENTO DE UMA PLATAFORMA WEB PARA O CONTROLE PEDAGÓGICO DA APAE DE ASSIS CHATEAUBRIAND</h2>
-              <p>Plataforma web desenvolvida para auxiliar no controle pedagógico da APAE.</p>
-              <div className="authors">
-                <p>Ana Julia Serra de Mello, Eduarda Catisto de Oliveira, Giovana Campos Foresi, Leonardo Augusto da Silva Picciani, Alexandre Rodrigues Monge</p>
-              </div>
-              <a href="#download" className="download-link">
-                <FaFileDownload />
-              </a>
-            </div>
-          </>
+        {artigos.length === 0 && (
+          <div className="no-results">
+            Nenhum artigo encontrado.
+          </div>
         )}
       </div>
     </div>
