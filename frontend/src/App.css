@@ -233,3 +233,27 @@
     margin-bottom: 10px;
     line-height: 1.4;
   }
+  
+  .nav-button {
+    background-color: transparent;
+    border: 1px solid var(--light-text);
+    color: var(--light-text);
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+  
+  .nav-button:hover {
+    background-color: var(--light-text);
+    color: var(--primary-green);
+  }
+  
+  .user-info {
+    color: var(--light-text);
+    margin-left: 15px;
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+  }

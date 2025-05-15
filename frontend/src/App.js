@@ -1,20 +1,25 @@
 import './App.css';
-import Header from './components/Header';
-import NavBar from './components/NavBar';
-import Banner from './components/Banner';
-import ProjectList from './components/ProjectList';
-import CourseSection from './components/CourseSection';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import routes from './routes';
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <NavBar />
-      <Banner />
-      <ProjectList />
-      <div className="divider"></div>
-      <CourseSection />
-    </div>
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <Routes>
+            {routes.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                element={route.element}
+              />
+            ))}
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
