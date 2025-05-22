@@ -3,13 +3,21 @@ import { api } from './api';
 export const artigoService = {
   // Get all articles
   getAll: async () => {
-    const response = await api.get('/artigos');
+    const response = await api.get('/artigos', {
+      params: {
+        include: 'Autores'
+      }
+    });
     return response.data;
   },
 
   // Get article by ID
   getById: async (id) => {
-    const response = await api.get(`/artigos/${id}`);
+    const response = await api.get(`/artigos/${id}`, {
+      params: {
+        include: 'Autores'
+      }
+    });
     return response.data;
   },
 

@@ -6,6 +6,7 @@ import Banner from '../components/Banner';
 import ProjectList from '../components/ProjectList';
 import CourseSection from '../components/CourseSection';
 import ProtectedRoute from '../components/ProtectedRoute';
+import ArtigoForm from '../components/ArtigoForm';
 import { useAuth } from '../contexts/AuthContext';
 import '../styles/Admin.css';
 
@@ -34,9 +35,8 @@ const AdminArea = () => {
           Sair do Sistema
         </button>
       </div>
-      <div className="admin-section">
-        <h2>Gerenciamento de Projetos</h2>
-        {/* Conteúdo administrativo será adicionado aqui */}
+      <div className="admin-content">
+        <ArtigoForm />
       </div>
     </div>
   );

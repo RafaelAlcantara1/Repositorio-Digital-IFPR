@@ -1,4 +1,4 @@
-const { Artigo, Autor } = require('../models');
+const { Artigo, Autor, ArtigoAutor } = require('../models');
 
 const artigoController = {
   // Listar todos os artigos
@@ -7,6 +7,7 @@ const artigoController = {
       const artigos = await Artigo.findAll({
         include: [{
           model: Autor,
+          as: 'Autores',
           through: { attributes: [] } // Não inclui atributos da tabela de junção
         }]
       });
@@ -23,6 +24,7 @@ const artigoController = {
       const artigo = await Artigo.findByPk(req.params.id, {
         include: [{
           model: Autor,
+          as: 'Autores',
           through: { attributes: [] }
         }]
       });
@@ -41,8 +43,18 @@ const artigoController = {
   // Criar novo artigo
   async create(req, res) {
     try {
+      console.log('Dados recebidos para criar artigo:', req.body);
       const { titulo, ano, id_curso, palavra_chave, link, autores } = req.body;
       
+      console.log('Criando artigo com os dados:', {
+        titulo,
+        ano,
+        id_curso,
+        palavra_chave,
+        link
+      });
+
+      // Criar o artigo
       const artigo = await Artigo.create({
         titulo,
         ano,
@@ -51,21 +63,43 @@ const artigoController = {
         link
       });
 
+      console.log('Artigo criado:', artigo);
+
       if (autores && autores.length > 0) {
-        await artigo.setAutores(autores);
+        console.log('Processando autores:', autores);
+        
+        // Criar os autores e obter seus IDs
+        const autoresCriados = await Promise.all(
+          autores.map(async (autorData) => {
+            const autor = await Autor.create({
+              nome: autorData.nome,
+              tipo: autorData.tipo
+            });
+            return autor;
+          })
+        );
+
+        // Associar os autores ao artigo
+        await artigo.setAutores(autoresCriados);
+        console.log('Autores associados com sucesso');
       }
 
       const artigoComAutores = await Artigo.findByPk(artigo.id_artigo, {
         include: [{
           model: Autor,
+          as: 'Autores',
           through: { attributes: [] }
         }]
       });
 
+      console.log('Artigo final com autores:', artigoComAutores);
       res.status(201).json(artigoComAutores);
     } catch (error) {
-      console.error('Erro ao criar artigo:', error);
-      res.status(500).json({ error: 'Erro ao criar artigo' });
+      console.error('Erro detalhado ao criar artigo:', error);
+      res.status(500).json({ 
+        error: 'Erro ao criar artigo',
+        details: error.message 
+      });
     }
   },
 
@@ -95,6 +129,7 @@ const artigoController = {
       const artigoAtualizado = await Artigo.findByPk(artigo.id_artigo, {
         include: [{
           model: Autor,
+          as: 'Autores',
           through: { attributes: [] }
         }]
       });

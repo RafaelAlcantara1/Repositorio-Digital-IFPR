@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const artigoRoutes = require('./routes/artigoRoutes');
 const autorRoutes = require('./routes/autorRoutes');
+const cursoRoutes = require('./routes/cursoRoutes');
 const sequelize = require('./config/db');
 
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.json());
 // Rotas
 app.use('/api/artigos', artigoRoutes);
 app.use('/api/autores', autorRoutes);
+app.use('/api/cursos', cursoRoutes);
 
 // Testar conexão com o DB
 sequelize.authenticate()
