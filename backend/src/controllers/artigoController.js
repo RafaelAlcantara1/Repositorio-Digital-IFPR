@@ -144,13 +144,23 @@ const artigoController = {
   // Deletar artigo
   async delete(req, res) {
     try {
-      const artigo = await Artigo.findByPk(req.params.id);
+      const artigo = await Artigo.findByPk(req.params.id, {
+        include: [{
+          model: Autor,
+          as: 'Autores'
+        }]
+      });
       
       if (!artigo) {
         return res.status(404).json({ error: 'Artigo não encontrado' });
       }
 
+      // Remove todas as associações com autores
+      await artigo.setAutores([]);
+      
+      // Deleta o artigo
       await artigo.destroy();
+      
       res.status(204).send();
     } catch (error) {
       console.error('Erro ao deletar artigo:', error);

@@ -16,6 +16,22 @@ const cursoController = {
       console.error('Erro detalhado ao buscar cursos:', error);
       res.status(500).json({ error: 'Erro ao buscar cursos' });
     }
+  },
+
+  deleteCurso: async (req, res) => {
+    try {
+      const curso = await Curso.findByPk(req.params.id);
+      
+      if (!curso) {
+        return res.status(404).json({ error: 'Curso não encontrado' });
+      }
+
+      await curso.destroy();
+      res.status(204).send();
+    } catch (error) {
+      console.error('Erro ao deletar curso:', error);
+      res.status(500).json({ error: 'Erro ao deletar curso' });
+    }
   }
 };
 

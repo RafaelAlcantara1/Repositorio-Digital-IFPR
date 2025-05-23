@@ -1,7 +1,9 @@
 // src/components/ProjectList.jsx
 import { useEffect, useState } from 'react';
 import { artigoService } from '../services/artigoService';
-import { FaFileDownload, FaEye, FaSearch } from 'react-icons/fa';
+import { FaFileDownload, FaEye, FaSearch, FaTrash } from 'react-icons/fa';
+import { useAuth } from '../contexts/AuthContext';
+import DeleteConfirmationModal from './DeleteConfirmationModal';
 
 function ProjectList() {
   const [artigos, setArtigos] = useState([]);
@@ -9,6 +11,14 @@ function ProjectList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  // Log para debug do usuário
+  useEffect(() => {
+    console.log('Usuário atual:', user);
+  }, [user]);
 
   // Função para destacar o texto pesquisado
   const highlightText = (text, searchTerm) => {
@@ -20,6 +30,23 @@ function ProjectList() {
         <span key={i} className="highlight">{part}</span> : 
         part
     );
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await artigoService.delete(id);
+      setArtigos(artigos.filter(artigo => artigo.id_artigo !== id));
+      setFilteredArtigos(filteredArtigos.filter(artigo => artigo.id_artigo !== id));
+      setModalOpen(false);
+    } catch (error) {
+      console.error('Erro ao deletar projeto:', error);
+      alert('Erro ao deletar projeto. Por favor, tente novamente.');
+    }
+  };
+
+  const openDeleteModal = (artigo) => {
+    setSelectedProject(artigo);
+    setModalOpen(true);
   };
 
   useEffect(() => {
@@ -140,6 +167,15 @@ function ProjectList() {
                     </a>
                   </>
                 )}
+                {user && (user.role === 'coordinator' || user.role === 'coordenador' || user.role === 'Coordenador') && (
+                  <button
+                    onClick={() => openDeleteModal(artigo)}
+                    className="remove-button"
+                    title="Excluir projeto"
+                  >
+                    <FaTrash />
+                  </button>
+                )}
               </div>
             </div>
           );
@@ -151,6 +187,13 @@ function ProjectList() {
           </div>
         )}
       </div>
+
+      <DeleteConfirmationModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={() => handleDelete(selectedProject?.id_artigo)}
+        projectTitle={selectedProject?.titulo}
+      />
     </div>
   );
 }

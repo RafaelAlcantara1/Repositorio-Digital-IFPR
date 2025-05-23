@@ -3,7 +3,6 @@ import { Navigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import Login from '../components/Login';
 import Banner from '../components/Banner';
-import ProjectList from '../components/ProjectList';
 import CourseSection from '../components/CourseSection';
 import ProtectedRoute from '../components/ProtectedRoute';
 import ArtigoForm from '../components/ArtigoForm';
@@ -14,8 +13,6 @@ import '../styles/Admin.css';
 const Home = () => (
   <>
     <Banner />
-    <ProjectList />
-    <div className="divider"></div>
     <CourseSection />
   </>
 );
