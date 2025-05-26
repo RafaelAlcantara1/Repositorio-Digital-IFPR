@@ -6,6 +6,7 @@ import Banner from '../components/Banner';
 import CourseSection from '../components/CourseSection';
 import ProtectedRoute from '../components/ProtectedRoute';
 import ArtigoForm from '../components/ArtigoForm';
+import CursoForm from '../components/CursoForm';
 import { useAuth } from '../contexts/AuthContext';
 import '../styles/Admin.css';
 
@@ -33,6 +34,7 @@ const AdminArea = () => {
         </button>
       </div>
       <div className="admin-content">
+        <CursoForm />
         <ArtigoForm />
       </div>
     </div>

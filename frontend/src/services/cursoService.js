@@ -13,6 +13,16 @@ export const cursoService = {
     }
   },
 
+  create: async (cursoData) => {
+    try {
+      const response = await api.post('/cursos', cursoData);
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao criar curso:', error.response || error);
+      throw error;
+    }
+  },
+
   delete: async (id) => {
     try {
       const response = await api.delete(`/cursos/${id}`);

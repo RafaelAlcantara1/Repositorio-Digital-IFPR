@@ -1,26 +1,35 @@
 import React from 'react';
 import './DeleteConfirmationModal.css';
 
-function DeleteConfirmationModal({ isOpen, onClose, onConfirm, projectTitle }) {
+const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, projectTitle, type = 'artigo' }) => {
   if (!isOpen) return null;
+
+  const getTitle = () => {
+    return type === 'curso' ? 'Excluir Curso' : 'Excluir Artigo';
+  };
+
+  const getMessage = () => {
+    return type === 'curso'
+      ? `Tem certeza que deseja excluir o curso "${projectTitle}"? Esta ação não pode ser desfeita.`
+      : `Tem certeza que deseja excluir o artigo "${projectTitle}"? Esta ação não pode ser desfeita.`;
+  };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>Confirmar Exclusão</h2>
-        <p>Tem certeza que deseja excluir o projeto "{projectTitle}"?</p>
-        <p className="warning-text">Esta ação não pode ser desfeita.</p>
-        <div className="modal-actions">
-          <button className="cancel-button" onClick={onClose}>
+        <h2>{getTitle()}</h2>
+        <p>{getMessage()}</p>
+        <div className="modal-buttons">
+          <button onClick={onClose} className="cancel-button">
             Cancelar
           </button>
-          <button className="confirm-button" onClick={onConfirm}>
-            Excluir
+          <button onClick={onConfirm} className="confirm-button">
+            Confirmar
           </button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default DeleteConfirmationModal; 

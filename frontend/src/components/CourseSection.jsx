@@ -1,9 +1,10 @@
 // src/components/CourseSection.jsx
 import React, { useState, useEffect } from 'react';
-import { FaFileDownload, FaTrash, FaEye } from 'react-icons/fa';
+import { FaFileDownload, FaTrash, FaEye, FaSearch } from 'react-icons/fa';
 import { cursoService } from '../services/cursoService';
 import { artigoService } from '../services/artigoService';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
+import { useAuth } from '../contexts/AuthContext';
 
 function CourseSection() {
   const [cursos, setCursos] = useState([]);
@@ -12,6 +13,11 @@ function CourseSection() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedArtigo, setSelectedArtigo] = useState(null);
+  const [cursoModalOpen, setCursoModalOpen] = useState(false);
+  const [selectedCurso, setSelectedCurso] = useState(null);
+  const { isAuthenticated } = useAuth();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredArtigos, setFilteredArtigos] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +29,7 @@ function CourseSection() {
         ]);
         setCursos(cursosData);
         setArtigos(artigosData);
+        setFilteredArtigos(artigosData);
         setError(null);
       } catch (error) {
         console.error('Erro ao buscar dados:', error);
@@ -35,19 +42,69 @@ function CourseSection() {
     fetchData();
   }, []);
 
-  const handleDeleteCurso = async (id_curso) => {
-    if (window.confirm('Tem certeza que deseja excluir este curso? Esta ação não pode ser desfeita.')) {
-      try {
-        await cursoService.delete(id_curso);
-        setCursos(cursos.filter(curso => curso.id_curso !== id_curso));
-      } catch (error) {
-        console.error('Erro ao deletar curso:', error);
+  // Função para destacar o texto pesquisado
+  const highlightText = (text, searchTerm) => {
+    if (!searchTerm || !text) return text;
+    
+    const parts = text.split(new RegExp(`(${searchTerm})`, 'gi'));
+    return parts.map((part, i) => 
+      part.toLowerCase() === searchTerm.toLowerCase() ? 
+        <span key={i} className="highlight">{part}</span> : 
+        part
+    );
+  };
+
+  // Efeito para filtrar artigos quando o termo de busca mudar
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredArtigos(artigos);
+      return;
+    }
+
+    const searchTermLower = searchTerm.toLowerCase();
+    const filtered = artigos.filter(artigo => {
+      const tituloMatch = artigo.titulo.toLowerCase().includes(searchTermLower);
+      const palavrasChaveMatch = artigo.palavra_chave?.toLowerCase().includes(searchTermLower);
+      const anoMatch = artigo.ano.toString().includes(searchTermLower);
+      const autoresMatch = artigo.Autores?.some(autor => 
+        autor.nome.toLowerCase().includes(searchTermLower)
+      );
+      
+      return tituloMatch || palavrasChaveMatch || anoMatch || autoresMatch;
+    });
+    
+    setFilteredArtigos(filtered);
+  }, [searchTerm, artigos]);
+
+  const openDeleteCursoModal = (curso) => {
+    if (!isAuthenticated()) {
+      alert('Você precisa estar logado para excluir um curso');
+      return;
+    }
+    setSelectedCurso(curso);
+    setCursoModalOpen(true);
+  };
+
+  const handleDeleteCurso = async () => {
+    try {
+      await cursoService.delete(selectedCurso.id_curso);
+      setCursos(cursos.filter(curso => curso.id_curso !== selectedCurso.id_curso));
+      setCursoModalOpen(false);
+    } catch (error) {
+      console.error('Erro ao deletar curso:', error);
+      if (error.response?.status === 400) {
+        alert(error.response.data.error);
+      } else {
         alert('Erro ao deletar curso. Por favor, tente novamente.');
       }
     }
   };
 
   const openDeleteModal = (artigo) => {
+    if (!isAuthenticated()) {
+      alert('Você precisa estar logado para excluir um artigo');
+      return;
+    }
     setSelectedArtigo(artigo);
     setModalOpen(true);
   };
@@ -74,16 +131,34 @@ function CourseSection() {
   return (
     <div className="content-section">
       <h2 className="section-title">Cursos e Artigos</h2>
+      
+      <div className="search-container">
+        <div className="search-box">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Buscar por título, palavras-chave, autores ou ano..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+      </div>
+
       {cursos.map(curso => {
-        const artigosDoCurso = artigos.filter(artigo => artigo.id_curso === curso.id_curso);
+        const artigosDoCurso = filteredArtigos.filter(artigo => artigo.id_curso === curso.id_curso);
+        
+        if (artigosDoCurso.length === 0 && searchTerm) return null;
         
         return (
-          <div key={curso.id_curso} className="course-section">
+          <div key={curso.id_curso} id={`curso-${curso.id_curso}`} className="course-section">
             <div className="course-header">
               <h2 className="course-title">{curso.nome}</h2>
-              <button onClick={() => handleDeleteCurso(curso.id_curso)} className="delete-button">
-                <FaTrash />
-              </button>
+              {isAuthenticated() && (
+                <button onClick={() => openDeleteCursoModal(curso)} className="delete-button">
+                  <FaTrash />
+                </button>
+              )}
             </div>
             
             {artigosDoCurso.length > 0 ? (
@@ -91,16 +166,16 @@ function CourseSection() {
                 {artigosDoCurso.map(artigo => (
                   <div key={artigo.id_artigo} className="article-item">
                     <div className="article-content">
-                      <h3>{artigo.titulo}</h3>
+                      <h3>{highlightText(artigo.titulo, searchTerm)}</h3>
                       <div className="article-meta">
-                        <p><strong>Ano:</strong> {artigo.ano}</p>
-                        <p><strong>Palavras-chave:</strong> {artigo.palavra_chave}</p>
+                        <p><strong>Ano:</strong> {highlightText(artigo.ano.toString(), searchTerm)}</p>
+                        <p><strong>Palavras-chave:</strong> {highlightText(artigo.palavra_chave, searchTerm)}</p>
                       </div>
                       <div className="authors">
                         <h4>Autores:</h4>
                         {artigo.Autores && artigo.Autores.map((autor, index) => (
                           <span key={autor.id_autor}>
-                            {autor.nome}
+                            {highlightText(autor.nome, searchTerm)}
                             {index < artigo.Autores.length - 1 ? ', ' : ''}
                           </span>
                         ))}
@@ -112,25 +187,43 @@ function CourseSection() {
                           <FaEye /> Ver
                         </a>
                       )}
-                      <button onClick={() => openDeleteModal(artigo)} className="delete-button">
-                        <FaTrash />
-                      </button>
+                      {isAuthenticated() && (
+                        <button onClick={() => openDeleteModal(artigo)} className="delete-button">
+                          <FaTrash />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="no-articles">Nenhum artigo cadastrado para este curso.</p>
+              <p className="no-articles">
+                {searchTerm ? 'Nenhum artigo encontrado para sua busca.' : 'Nenhum artigo cadastrado para este curso.'}
+              </p>
             )}
           </div>
         );
       })}
+
+      {searchTerm && filteredArtigos.length === 0 && (
+        <div className="no-results">
+          Nenhum resultado encontrado para "{searchTerm}"
+        </div>
+      )}
 
       <DeleteConfirmationModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onConfirm={handleDeleteArtigo}
         projectTitle={selectedArtigo?.titulo}
+      />
+
+      <DeleteConfirmationModal
+        isOpen={cursoModalOpen}
+        onClose={() => setCursoModalOpen(false)}
+        onConfirm={handleDeleteCurso}
+        projectTitle={selectedCurso?.nome}
+        type="curso"
       />
     </div>
   );

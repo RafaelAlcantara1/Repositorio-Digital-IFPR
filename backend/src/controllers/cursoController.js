@@ -1,4 +1,5 @@
 const Curso = require('../models/Curso');
+const Artigo = require('../models/artigoModel');
 
 const cursoController = {
   getAllCursos: async (req, res) => {
@@ -18,12 +19,40 @@ const cursoController = {
     }
   },
 
+  createCurso: async (req, res) => {
+    try {
+      const { nome } = req.body;
+
+      if (!nome) {
+        return res.status(400).json({ error: 'Nome do curso é obrigatório' });
+      }
+
+      const curso = await Curso.create({ nome });
+      res.status(201).json(curso);
+    } catch (error) {
+      console.error('Erro ao criar curso:', error);
+      res.status(500).json({ error: 'Erro ao criar curso' });
+    }
+  },
+
   deleteCurso: async (req, res) => {
     try {
       const curso = await Curso.findByPk(req.params.id);
       
       if (!curso) {
         return res.status(404).json({ error: 'Curso não encontrado' });
+      }
+
+      // Verificar se existem artigos associados ao curso
+      const artigos = await Artigo.findAll({
+        where: { id_curso: req.params.id }
+      });
+
+      if (artigos.length > 0) {
+        return res.status(400).json({ 
+          error: 'Não é possível excluir o curso pois existem artigos associados a ele',
+          artigosCount: artigos.length
+        });
       }
 
       await curso.destroy();
