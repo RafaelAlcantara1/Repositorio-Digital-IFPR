@@ -1,20 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { FaChevronDown, FaBars, FaTimes, FaSignOutAlt } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
-import { cursoService } from '../services/cursoService';
-import { FaChevronDown } from 'react-icons/fa';
+import './NavBar.css';
 
 const NavBar = () => {
-  const { isAuthenticated, logout, user } = useAuth();
-  const navigate = useNavigate();
-  const [cursos, setCursos] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [cursos, setCursos] = useState([]);
   const dropdownRef = useRef(null);
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const data = await cursoService.getAll();
+        const response = await fetch('http://localhost:3001/api/cursos');
+        const data = await response.json();
         setCursos(data);
       } catch (error) {
         console.error('Erro ao buscar cursos:', error);
@@ -32,24 +35,47 @@ const NavBar = () => {
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleCourseClick = (cursoId) => {
-    navigate('/');
-    const courseElement = document.getElementById(`curso-${cursoId}`);
-    if (courseElement) {
-      courseElement.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleCourseClick = (id) => {
     setIsDropdownOpen(false);
+    setIsMobileMenuOpen(false);
+
+    if (location.pathname !== '/') {
+      navigate('/');
+    }
+
+    setTimeout(() => {
+      const element = document.getElementById(`curso-${id}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    }
   };
 
   return (
     <nav className="navbar">
-      <div className="nav-links">
-        <Link to="/">Início</Link>
+      <div className="navbar-brand">
+        <button 
+          className="mobile-menu-button"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+      </div>
+      
+      <div className={`nav-links ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}>
+        <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Início</Link>
         <div className="dropdown" ref={dropdownRef}>
           <button 
             className="dropdown-button"
@@ -71,15 +97,22 @@ const NavBar = () => {
             </div>
           )}
         </div>
-        {isAuthenticated() ? (
+        {isAuthenticated && user ? (
           <>
-            <Link to="/admin">Painel de Controle</Link>
-            <span className="user-info">
-              Olá, {user?.username}
-            </span>
+            <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)}>Painel de Controle</Link>
+            <div className="user-info">
+              <span className="welcome-text">Olá, {user.username}</span>
+              <button 
+                className="nav-button" 
+                onClick={handleLogout}
+                style={{ marginLeft: '10px' }}
+              >
+                <FaSignOutAlt /> Sair
+              </button>
+            </div>
           </>
         ) : (
-          <Link to="/login">Área do Coordenador</Link>
+          <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Área do Coordenador</Link>
         )}
       </div>
     </nav>

@@ -26,12 +26,6 @@ const AdminArea = () => {
     <div className="admin-area">
       <div className="admin-header">
         <h1>Área do Coordenador</h1>
-        <button 
-          onClick={logout}
-          className="admin-logout-button"
-        >
-          Sair do Sistema
-        </button>
       </div>
       <div className="admin-content">
         <CursoForm />
