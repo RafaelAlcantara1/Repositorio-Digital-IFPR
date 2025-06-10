@@ -130,7 +130,7 @@ function CourseSection() {
 
   return (
     <div className="content-section">
-      <h2 className="section-title">Cursos e Artigos</h2>
+      <h2 className="section-title">Cursos e Trabalhos</h2>
       
       <div className="search-container">
         <div className="search-box">
@@ -184,7 +184,7 @@ function CourseSection() {
                     <div className="article-actions">
                       {artigo.link && (
                         <a href={artigo.link} target="_blank" rel="noopener noreferrer" className="view-link">
-                          <FaEye /> Ver
+                          <FaEye /> Ver Trabalho
                         </a>
                       )}
                       {isAuthenticated() && (

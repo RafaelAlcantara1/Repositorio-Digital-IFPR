@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../styles/Login.css';
 
 const Login = () => {
@@ -10,6 +11,7 @@ const Login = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
@@ -20,6 +22,10 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -47,7 +53,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <h2>Login do Coordenador</h2>
+        <h2>Login da Coordenação</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="username">Usuário:</label>
@@ -63,15 +69,25 @@ const Login = () => {
           </div>
           <div className="form-group">
             <label htmlFor="password">Senha:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={credentials.password}
-              onChange={handleChange}
-              required
-              disabled={loading}
-            />
+            <div className="password-input-group">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={credentials.password}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={togglePasswordVisibility}
+                disabled={loading}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </div>
           {error && <div className="error-message">{error}</div>}
           <button 

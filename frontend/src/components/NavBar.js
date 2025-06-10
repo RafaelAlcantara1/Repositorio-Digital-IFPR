@@ -112,7 +112,7 @@ const NavBar = () => {
             </div>
           </>
         ) : (
-          <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Área do Coordenador</Link>
+          <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Área da Coordenação  </Link>
         )}
       </div>
     </nav>

@@ -25,7 +25,7 @@ const AdminArea = () => {
   return (
     <div className="admin-area">
       <div className="admin-header">
-        <h1>Área do Coordenador</h1>
+        <h1>Área da Coordenação</h1>
       </div>
       <div className="admin-content">
         <CursoForm />
