@@ -67,6 +67,11 @@ function ArtigoForm() {
   };
 
   const removeAutor = (index) => {
+    // Não permite remover se há apenas um autor
+    if (formData.autores.length <= 1) {
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       autores: prev.autores.filter((_, i) => i !== index)
@@ -216,11 +221,12 @@ function ArtigoForm() {
                 <option value="orientador">Orientador</option>
                 <option value="coorientador">Coorientador</option>
               </select>
-              {index > 0 && (
+              {formData.autores.length > 1 && (
                 <button
                   type="button"
                   className="remove-button"
                   onClick={() => removeAutor(index)}
+                  title="Remover autor"
                 >
                   <FaTrash />
                 </button>
@@ -250,4 +256,4 @@ function ArtigoForm() {
   );
 }
 
-export default ArtigoForm; 
+export default ArtigoForm;

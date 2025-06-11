@@ -7,6 +7,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  console.log(AUTH_CONFIG)
+
   useEffect(() => {
     // Verificar se há um usuário salvo no localStorage
     const storedUser = localStorage.getItem('user');
