@@ -1,5 +1,5 @@
 .footer {
-  background-color: #006633; /* Verde IFPR */
+  background-color: var(--primary-green); /* Verde IFPR */
   color: white;
   padding: 2rem 0 0 0;
   margin-top: auto;
@@ -52,7 +52,7 @@
 }
 
 .footer-bottom {
-  background-color: #004d26; /* Verde IFPR mais escuro */
+  background-color: #2d4f26; /* Verde IFPR mais escuro */
   padding: 1rem;
   text-align: center;
   margin-top: 2rem;

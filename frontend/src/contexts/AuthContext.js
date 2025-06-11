@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  console.log(AUTH_CONFIG)
+  console.log('AUTH_CONFIG:', AUTH_CONFIG);
 
   useEffect(() => {
     // Verificar se há um usuário salvo no localStorage
@@ -34,10 +34,15 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
+      console.log('Tentando login com:', { username, password });
+      console.log('Credenciais configuradas:', AUTH_CONFIG.credentials);
+      
       // Verificação segura das credenciais
       const isValidCredentials = 
         username === AUTH_CONFIG.credentials.username && 
         password === AUTH_CONFIG.credentials.password;
+
+      console.log('Credenciais válidas?', isValidCredentials);
 
       if (isValidCredentials) {
         const userData = {
@@ -62,6 +67,7 @@ export const AuthProvider = ({ children }) => {
       }
       return { success: false, error: 'Credenciais inválidas' };
     } catch (error) {
+      console.error('Erro no login:', error);
       return { success: false, error: 'Erro ao fazer login' };
     }
   };

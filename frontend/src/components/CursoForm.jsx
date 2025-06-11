@@ -4,7 +4,8 @@ import { FaPlus } from 'react-icons/fa';
 
 function CursoForm() {
   const [formData, setFormData] = useState({
-    nome: ''
+    nome: '',
+    tipo_curso: 'TECNICO_INTEGRADO'
   });
 
   const [loading, setLoading] = useState(false);
@@ -28,7 +29,7 @@ function CursoForm() {
     try {
       await cursoService.create(formData);
       setSuccess(true);
-      setFormData({ nome: '' });
+      setFormData({ nome: '', tipo_curso: 'TECNICO_INTEGRADO' });
     } catch (err) {
       console.error('Erro ao cadastrar curso:', err);
       setError(err.response?.data?.error || 'Erro ao cadastrar curso. Por favor, tente novamente.');
@@ -56,6 +57,21 @@ function CursoForm() {
             required
             placeholder="Digite o nome do curso"
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="tipo_curso">Tipo do Curso *</label>
+          <select
+            id="tipo_curso"
+            name="tipo_curso"
+            value={formData.tipo_curso}
+            onChange={handleChange}
+            required
+          >
+            <option value="TECNICO_INTEGRADO">Curso Técnico Integrado ao Ensino Médio</option>
+            <option value="TECNICO_SUBSEQUENTE">Curso Técnico Subsequente</option>
+            <option value="SUPERIOR">Curso Superior</option>
+          </select>
         </div>
 
         <button 

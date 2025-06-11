@@ -21,13 +21,17 @@ const cursoController = {
 
   createCurso: async (req, res) => {
     try {
-      const { nome } = req.body;
+      const { nome, tipo_curso } = req.body;
 
       if (!nome) {
         return res.status(400).json({ error: 'Nome do curso é obrigatório' });
       }
 
-      const curso = await Curso.create({ nome });
+      if (!tipo_curso) {
+        return res.status(400).json({ error: 'Tipo do curso é obrigatório' });
+      }
+
+      const curso = await Curso.create({ nome, tipo_curso });
       res.status(201).json(curso);
     } catch (error) {
       console.error('Erro ao criar curso:', error);

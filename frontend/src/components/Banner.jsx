@@ -1,11 +1,14 @@
 // src/components/Banner.jsx
 import React from 'react';
-import bookImage from '../assets/livro.jpg'; // Você precisará adicionar este arquivo
+import { Link } from 'react-router-dom';
+import bookImage from '../assets/livro.png'; // Você precisará adicionar este arquivo
 
 function Banner() {
   return (
     <div className="banner">
-      <img src={bookImage} alt="Livro aberto" />
+      <Link to="/sobre">
+        <img src={bookImage} alt="Livro aberto" />
+      </Link>
     </div>
   );
 }

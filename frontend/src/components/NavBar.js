@@ -7,25 +7,10 @@ import './NavBar.css';
 const NavBar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [cursos, setCursos] = useState([]);
   const dropdownRef = useRef(null);
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    const fetchCursos = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/cursos');
-        const data = await response.json();
-        setCursos(data);
-      } catch (error) {
-        console.error('Erro ao buscar cursos:', error);
-      }
-    };
-
-    fetchCursos();
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -38,7 +23,7 @@ const NavBar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleCourseClick = (id) => {
+  const handleCourseCategoryClick = (category) => {
     setIsDropdownOpen(false);
     setIsMobileMenuOpen(false);
 
@@ -47,7 +32,7 @@ const NavBar = () => {
     }
 
     setTimeout(() => {
-      const element = document.getElementById(`curso-${id}`);
+      const element = document.getElementById(category);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
@@ -76,6 +61,7 @@ const NavBar = () => {
       
       <div className={`nav-links ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}>
         <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Início</Link>
+        <Link to="/sobre" onClick={() => setIsMobileMenuOpen(false)}>Sobre</Link>
         <div className="dropdown" ref={dropdownRef}>
           <button 
             className="dropdown-button"
@@ -85,15 +71,24 @@ const NavBar = () => {
           </button>
           {isDropdownOpen && (
             <div className="dropdown-content">
-              {cursos.map(curso => (
-                <button
-                  key={curso.id_curso}
-                  onClick={() => handleCourseClick(curso.id_curso)}
-                  className="dropdown-item"
-                >
-                  {curso.nome}
-                </button>
-              ))}
+              <button
+                onClick={() => handleCourseCategoryClick('cursos-tecnicos-integrados')}
+                className="dropdown-item"
+              >
+                Cursos Técnicos Integrados ao Ensino Médio
+              </button>
+              <button
+                onClick={() => handleCourseCategoryClick('cursos-superiores')}
+                className="dropdown-item"
+              >
+                Cursos Superiores
+              </button>
+              <button
+                onClick={() => handleCourseCategoryClick('cursos-tecnicos-subsequentes')}
+                className="dropdown-item"
+              >
+                Cursos Técnicos Subsequentes
+              </button>
             </div>
           )}
         </div>
@@ -101,7 +96,7 @@ const NavBar = () => {
           <>
             <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)}>Painel de Controle</Link>
             <div className="user-info">
-              <span className="welcome-text">Olá, {user.username}</span>
+              <span className="welcome-text">Olá, Coordenador(a)!</span>
               <button 
                 className="nav-button" 
                 onClick={handleLogout}
@@ -112,7 +107,7 @@ const NavBar = () => {
             </div>
           </>
         ) : (
-          <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Área da Coordenação  </Link>
+          <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Área da Coordenação</Link>
         )}
       </div>
     </nav>

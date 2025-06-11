@@ -28,26 +28,34 @@ body {
 .header {
   display: flex;
   align-items: center;
-  padding: 15px 20px;
+  padding: 20px 30px;
   background-color: white;
+  gap: 25px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  flex-shrink: 0;
 }
 
 .logo img {
-  height: 50px;
+  height: 90px;
+  transition: transform 0.3s ease;
 }
+
 
 .title {
   flex-grow: 1;
-  text-align: center;
+  text-align: left;
   color: var(--primary-green);
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 0 15px;
+  letter-spacing: 0.3px;
+  max-width: 800px;
 }
 
 /* Navigation Bar */
@@ -199,10 +207,30 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .banner img {
   max-width: 300px;
+  transition: all 0.5s ease;
+  transform-origin: center bottom;
+}
+
+.banner:hover img {
+  animation: swing 2s ease-in-out infinite;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes swing {
+  0% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(-5deg);
+  }
 }
 
 /* Content Section */
@@ -728,15 +756,17 @@ body {
   }
 
   .header {
-    padding: 10px;
+    padding: 15px;
+    gap: 15px;
   }
 
   .logo img {
-    height: 40px;
+    height: 70px;
   }
 
   .title {
     font-size: 18px;
+    padding: 0 10px;
   }
 
   .navbar {

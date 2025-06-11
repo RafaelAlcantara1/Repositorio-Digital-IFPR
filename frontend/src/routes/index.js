@@ -7,6 +7,7 @@ import CourseSection from '../components/CourseSection';
 import ProtectedRoute from '../components/ProtectedRoute';
 import ArtigoForm from '../components/ArtigoForm';
 import CursoForm from '../components/CursoForm';
+import Sobre from '../components/Sobre';
 import { useAuth } from '../contexts/AuthContext';
 import '../styles/Admin.css';
 
@@ -40,6 +41,10 @@ const routes = [
   {
     path: '/',
     element: <Layout><Home /></Layout>
+  },
+  {
+    path: '/sobre',
+    element: <Layout><Sobre /></Layout>
   },
   {
     path: '/login',
