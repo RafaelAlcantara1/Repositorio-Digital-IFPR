@@ -35,37 +35,36 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       console.log('Tentando login com:', { username, password });
-      console.log('Credenciais configuradas:', AUTH_CONFIG.credentials);
       
-      // Verificação segura das credenciais
-      const isValidCredentials = 
-        username === AUTH_CONFIG.credentials.username && 
-        password === AUTH_CONFIG.credentials.password;
+      // Fazer requisição para a API de autenticação
+      const response = await fetch(`${AUTH_CONFIG.apiUrl}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-      console.log('Credenciais válidas?', isValidCredentials);
+      const data = await response.json();
+      console.log('Resposta do servidor:', data);
 
-      if (isValidCredentials) {
+      if (data.success) {
         const userData = {
-          username,
-          role: 'coordinator',
+          username: data.data.user.username,
+          role: data.data.user.role,
           lastLogin: new Date().toISOString()
         };
         
-        // Gerar um token mais seguro (em produção, isso viria do backend)
-        const token = btoa(JSON.stringify({
-          ...userData,
-          timestamp: new Date().getTime()
-        }));
-        
         // Salvar dados do usuário e token
         localStorage.setItem('user', JSON.stringify(userData));
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', data.data.token);
         localStorage.setItem('lastLogin', new Date().toISOString());
         
         setUser(userData);
         return { success: true };
       }
-      return { success: false, error: 'Credenciais inválidas' };
+      
+      return { success: false, error: data.message || 'Credenciais inválidas' };
     } catch (error) {
       console.error('Erro no login:', error);
       return { success: false, error: 'Erro ao fazer login' };
