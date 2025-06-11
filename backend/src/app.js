@@ -46,6 +46,47 @@ app.use('/api/cursos', cursoRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 
+// Rota de teste do banco de dados
+app.get('/api/test-db', async (req, res) => {
+  try {
+    // Testar conexão com o banco de dados
+    await sequelize.authenticate();
+    
+    // Tentar fazer uma query simples
+    const [results] = await sequelize.query('SELECT 1+1 as result');
+    
+    res.json({
+      status: 'success',
+      message: 'Conexão com o banco de dados estabelecida com sucesso',
+      database: {
+        connected: true,
+        queryResult: results[0].result
+      },
+      config: {
+        host: process.env.DB_HOST || 'repositorioteste-repositorioteste.d.aivencloud.com',
+        database: process.env.DB_NAME || 'defaultdb',
+        user: process.env.DB_USER || 'avnadmin',
+        port: process.env.DB_PORT || 24492
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Erro ao testar banco de dados:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Erro ao conectar com o banco de dados',
+      error: error.message,
+      config: {
+        host: process.env.DB_HOST || 'repositorioteste-repositorioteste.d.aivencloud.com',
+        database: process.env.DB_NAME || 'defaultdb',
+        user: process.env.DB_USER || 'avnadmin',
+        port: process.env.DB_PORT || 24492
+      },
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Rota de teste
 app.get('/api/health', async (req, res) => {
   try {
