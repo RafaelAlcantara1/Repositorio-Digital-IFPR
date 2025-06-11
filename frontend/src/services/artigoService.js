@@ -3,7 +3,7 @@ import { api } from './api';
 export const artigoService = {
   // Get all articles
   getAll: async () => {
-    const response = await api.get('/artigos', {
+    const response = await api.get('/api/artigos', {
       params: {
         include: 'Autores'
       }
@@ -13,7 +13,7 @@ export const artigoService = {
 
   // Get article by ID
   getById: async (id) => {
-    const response = await api.get(`/artigos/${id}`, {
+    const response = await api.get(`/api/artigos/${id}`, {
       params: {
         include: 'Autores'
       }
@@ -23,19 +23,19 @@ export const artigoService = {
 
   // Create new article
   create: async (artigoData) => {
-    const response = await api.post('/artigos', artigoData);
+    const response = await api.post('/api/artigos', artigoData);
     return response.data;
   },
 
   // Update article
   update: async (id, artigoData) => {
-    const response = await api.put(`/artigos/${id}`, artigoData);
+    const response = await api.put(`/api/artigos/${id}`, artigoData);
     return response.data;
   },
 
   // Delete article
   delete: async (id) => {
-    const response = await api.delete(`/artigos/${id}`);
+    const response = await api.delete(`/api/artigos/${id}`);
     return response.data;
   }
 }; 
