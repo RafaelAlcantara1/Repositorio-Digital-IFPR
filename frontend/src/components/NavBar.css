@@ -34,6 +34,15 @@
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
+  transition: opacity 0.2s ease;
+}
+
+.mobile-menu-button:hover {
+  opacity: 0.8;
+}
+
+.mobile-menu-button:active {
+  transform: scale(0.95);
 }
 
 .nav-links {
@@ -183,6 +192,14 @@
 @media (max-width: 768px) {
   .mobile-menu-button {
     display: block;
+  }
+
+  .mobile-menu-button svg {
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-menu-button:hover svg {
+    transform: rotate(90deg);
   }
 
   .current-page-name {

@@ -232,7 +232,7 @@ function CourseSection() {
                   {artigosDoCurso.map(artigo => (
                     <div key={artigo.id_artigo} className="article-item">
                       <div className="article-content">
-                        <h4>{highlightText(artigo.titulo, searchTerm)}</h4>
+                        <h3>{highlightText(artigo.titulo, searchTerm)}</h3>
                         <div className="article-meta">
                           <p><strong>Ano:</strong> {highlightText(artigo.ano.toString(), searchTerm)}</p>
                           <p><strong>Palavras-chave:</strong> {highlightText(artigo.palavra_chave, searchTerm)}</p>

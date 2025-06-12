@@ -85,6 +85,11 @@
     height: 2px;
     bottom: -8px;
   }
+
+  .courseDropdownItem {
+    padding: 0.6rem;
+    font-size: 0.75rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -106,6 +111,11 @@
     width: 30px;
     height: 2px;
     bottom: -6px;
+  }
+
+  .courseDropdownItem {
+    padding: 0.5rem;
+    font-size: 0.65rem;
   }
 }
 
@@ -131,7 +141,7 @@
   border: 1px solid #e0e0e0;
 }
 
-.courseDropdownItem {
+.courseTypeDropdown .courseDropdownItem {
   display: block;
   width: 100%;
   padding: 1rem;
@@ -146,17 +156,17 @@
   position: relative;
 }
 
-.courseDropdownItem:last-child {
+.courseTypeDropdown .courseDropdownItem:last-child {
   border-bottom: none;
 }
 
-.courseDropdownItem:hover {
+.courseTypeDropdown .courseDropdownItem:hover {
   background-color: #f5f5f5;
   color: #004d26;
   padding-left: 1.5rem;
 }
 
-.courseDropdownItem::before {
+.courseTypeDropdown .courseDropdownItem::before {
   content: '';
   position: absolute;
   left: 0;
@@ -167,8 +177,22 @@
   transition: width 0.15s ease;
 }
 
-.courseDropdownItem:hover::before {
+.courseTypeDropdown .courseDropdownItem:hover::before {
   width: 8px;
+}
+
+@media (max-width: 768px) {
+  .courseTypeDropdown .courseDropdownItem {
+    padding: 0.5rem;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .courseTypeDropdown .courseDropdownItem {
+    padding: 0.4rem;
+    font-size: 0.6rem;
+  }
 }
 
 /* Estilo para a seção de cursos e trabalhos */
