@@ -12,6 +12,23 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Função para obter o nome da página atual
+  const getCurrentPageName = () => {
+    const path = location.pathname;
+    switch (path) {
+      case '/':
+        return 'Início';
+      case '/sobre':
+        return 'Sobre';
+      case '/admin':
+        return 'Painel de Controle';
+      case '/login':
+        return 'Login';
+      default:
+        return 'Página';
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -57,6 +74,7 @@ const NavBar = () => {
         >
           {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
         </button>
+        <span className="current-page-name">{getCurrentPageName()}</span>
       </div>
       
       <div className={`nav-links ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}>
@@ -92,7 +110,7 @@ const NavBar = () => {
             </div>
           )}
         </div>
-        {isAuthenticated && user ? (
+        {isAuthenticated() ? (
           <>
             <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)}>Painel de Controle</Link>
             <div className="user-info">

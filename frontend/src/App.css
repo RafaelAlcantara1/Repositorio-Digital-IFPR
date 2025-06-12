@@ -32,6 +32,7 @@ body {
   background-color: white;
   gap: 25px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .logo {
@@ -45,17 +46,21 @@ body {
   transition: transform 0.3s ease;
 }
 
-
 .title {
   flex-grow: 1;
   text-align: left;
   color: var(--primary-green);
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.2;
   padding: 0 15px;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.1px;
   max-width: 800px;
+  transition: all 0.3s ease;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Navigation Bar */
@@ -208,12 +213,15 @@ body {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  border-radius: 20px;
+  overflow: hidden;
 }
 
 .banner img {
   max-width: 300px;
   transition: all 0.5s ease;
   transform-origin: center bottom;
+  border-radius: 15px;
 }
 
 .banner:hover img {
@@ -704,8 +712,6 @@ body {
   }
 }
 
-
-
 .form-actions {
   margin-top: 2rem;
   text-align: center;
@@ -753,10 +759,15 @@ body {
   .App {
     max-width: 100%;
     margin: 0;
+    box-shadow: none;
+  }
+
+  .main-content {
+    padding: 1rem 0.5rem;
   }
 
   .header {
-    padding: 15px;
+    padding: 15px 20px;
     gap: 15px;
   }
 
@@ -765,8 +776,9 @@ body {
   }
 
   .title {
-    font-size: 18px;
+    font-size: 14px;
     padding: 0 10px;
+    line-height: 1.2;
   }
 
   .navbar {
@@ -896,17 +908,25 @@ body {
 /* Small Mobile Devices */
 @media (max-width: 480px) {
   .header {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.5rem;
+    flex-direction: row;
+    text-align: left;
+    padding: 15px;
+    gap: 10px;
   }
 
   .logo {
-    justify-content: center;
+    justify-content: flex-start;
+  }
+
+  .logo img {
+    height: 50px;
   }
 
   .title {
-    font-size: 16px;
+    font-size: 11px;
+    text-align: left;
+    padding: 0;
+    line-height: 1.2;
   }
 
   .project-meta {
@@ -1048,5 +1068,141 @@ body {
   .error-message {
     font-size: 0.9rem;
     padding: 0.75rem;
+  }
+}
+
+/* Media Queries para Artigos e Cursos */
+@media (max-width: 768px) {
+  .App {
+    max-width: 100%;
+    margin: 0;
+    box-shadow: none;
+  }
+
+  .main-content {
+    padding: 1rem 0.5rem;
+  }
+
+  .course-section {
+    margin-bottom: 1.5rem;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .course-header {
+    padding: 0.75rem;
+  }
+
+  .course-title {
+    font-size: 1.1rem;
+  }
+
+  .articles-list {
+    padding: 0.75rem;
+    width: 100%;
+  }
+
+  .article-item {
+    padding: 0.75rem;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+
+  .article-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .article-content h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .article-meta {
+    font-size: 0.75rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .article-meta p {
+    margin: 0.1rem 0;
+  }
+
+  .authors {
+    font-size: 0.75rem;
+  }
+
+  .authors h4 {
+    font-size: 0.8rem;
+    margin: 0.3rem 0;
+  }
+
+  .article-actions {
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .view-link {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .App {
+    max-width: 100%;
+  }
+
+  .main-content {
+    padding: 0.5rem;
+  }
+
+  .course-section {
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  .course-header {
+    padding: 0.5rem;
+  }
+
+  .course-title {
+    font-size: 1rem;
+  }
+
+  .articles-list {
+    padding: 0.5rem;
+  }
+
+  .article-item {
+    padding: 0.5rem;
+  }
+
+  .article-content h3 {
+    font-size: 0.85rem;
+  }
+
+  .article-meta {
+    font-size: 0.7rem;
+  }
+
+  .authors {
+    font-size: 0.7rem;
+  }
+
+  .authors h4 {
+    font-size: 0.75rem;
+  }
+
+  .article-actions {
+    margin-left: 0.3rem;
+  }
+
+  .view-link {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
   }
 }

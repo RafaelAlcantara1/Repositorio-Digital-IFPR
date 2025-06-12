@@ -1,0 +1,72 @@
+.header {
+  position: relative;
+  z-index: 100;
+}
+
+.logo {
+  position: relative;
+}
+
+.logo img {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.logo img:hover {
+  transform: scale(1.05);
+}
+
+.title {
+  position: relative;
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-green);
+  transition: width 0.3s ease;
+}
+
+@media (min-width: 769px) {
+  .title:hover::after {
+    width: 100%;
+  }
+}
+
+/* Animações para telas menores */
+@media (max-width: 480px) {
+  .header {
+    animation: slideDown 0.5s ease;
+  }
+
+  .logo {
+    animation: fadeIn 0.5s ease;
+  }
+
+  .title {
+    animation: fadeIn 0.5s ease 0.2s backwards;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+} 

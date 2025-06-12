@@ -9,6 +9,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  gap: 1rem;
 }
 
 .navbar-brand a {
@@ -16,6 +17,13 @@
   text-decoration: none;
   font-size: 1.2rem;
   font-weight: 500;
+}
+
+.current-page-name {
+  display: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: white;
 }
 
 .mobile-menu-button {
@@ -175,6 +183,18 @@
 @media (max-width: 768px) {
   .mobile-menu-button {
     display: block;
+  }
+
+  .current-page-name {
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .navbar-brand {
+    width: 100%;
+    position: relative;
   }
 
   .nav-links {

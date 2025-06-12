@@ -1,6 +1,7 @@
 // src/components/Header.jsx
 import React from 'react';
 import logoIFPR from '../assets/logo-ifpr.png'; // Você precisará adicionar este arquivo
+import './Header.css';
 
 function Header() {
   return (
