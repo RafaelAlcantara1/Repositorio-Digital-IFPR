@@ -1,5 +1,5 @@
 .footer {
-  background-color: var(--primary-green); /* Verde IFPR */
+  background-color: var(--primary-green);
   color: white;
   padding: 2rem 0 0 0;
   margin-top: auto;
@@ -8,14 +8,15 @@
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
   padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .footer-section {
-  padding: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .footer-section h3 {
@@ -25,11 +26,6 @@
   font-weight: 600;
 }
 
-.footer-section p {
-  margin: 0.5rem 0;
-  color: #e0e0e0;
-}
-
 .footer-section ul {
   list-style: none;
   padding: 0;
@@ -37,30 +33,30 @@
 }
 
 .footer-section ul li {
-  margin: 0.5rem 0;
+  margin-bottom: 0.5rem;
 }
 
-.footer-section ul li a {
+.footer-section a {
   color: #e0e0e0;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-.footer-section ul li a:hover {
+.footer-section a:hover {
   color: #fff;
   text-decoration: underline;
 }
 
 .footer-bottom {
-  background-color: #2d4f26; /* Verde IFPR mais escuro */
-  padding: 1rem;
+  background-color: #2d4f26;
   text-align: center;
+  padding: 1rem;
   margin-top: 2rem;
 }
 
 .footer-bottom p {
-  margin: 0;
   color: #e0e0e0;
+  margin: 0;
   font-size: 0.9rem;
 }
 

@@ -1,5 +1,10 @@
 import React from 'react';
 import './Sobre.css';
+import { FaEnvelope } from 'react-icons/fa';
+import samuelImg from '../assets/samuel.jpg';
+import matheusImg from '../assets/matheus.jpg';
+import rafaelImg from '../assets/rafael.jpg';
+import michelliImg from '../assets/michelli.jpg';
 
 function Sobre() {
   return (
@@ -37,11 +42,58 @@ function Sobre() {
       </section>
 
       <section className="sobre-section">
-        <h2>Contato</h2>
-        <p>
-          Para mais informações sobre o Repositório Digital, entre em contato com a coordenação 
-          do campus através do email: contato@ifpr.edu.br
-        </p>
+        <h2>Equipe de Desenvolvimento</h2>
+        <div className="autores-grid">
+          <div className="autor-card">
+            <div className="autor-foto">
+              <img src={matheusImg} alt="Foto do Matheus" />
+            </div>
+            <h3>Matheus Lucas da Palma Oliveira</h3>
+            <p>Estudante de Informática</p>
+            <div className="autor-email">
+              <FaEnvelope className="email-icon" />
+              <a href="mailto:matheuslucasteu57@gmail.com">matheuslucasteu57@gmail.com</a>
+            </div>
+          </div>
+
+          <div className="autor-card">
+            <div className="autor-foto">
+              <img src={rafaelImg} alt="Foto do Rafael" />
+            </div>
+            <h3>Rafael Henrique Rodrigues de Alcantara</h3>
+            <p>Estudante de Informática</p>
+            <div className="autor-email">
+              <FaEnvelope className="email-icon" />
+              <a href="mailto:rafinha009990@gmail.com">rafinha009990@gmail.com</a>
+            </div>
+          </div>
+
+          <div className="autor-card">
+            <div className="autor-foto">
+              <img src={michelliImg} alt="Foto da Michelli" />
+            </div>
+            <h3>Michelli Cristina Galli</h3>
+            <p>Professora Orientadora</p>
+            <p>Especialista em Linguagens</p>
+            <div className="autor-email">
+              <FaEnvelope className="email-icon" />
+              <a href="mailto:michelli.gali@ifpr.edu.br">michelli.gali@ifpr.edu.br</a>
+            </div>
+          </div>
+
+          <div className="autor-card">
+            <div className="autor-foto">
+              <img src={samuelImg} alt="Foto do Samuel" />
+            </div>
+            <h3>Samuel Stephan Milczuk</h3>
+            <p>Professor Orientador</p>
+            <p>Especialista Desenvolvimento Web</p>
+            <div className="autor-email">
+              <FaEnvelope className="email-icon" />
+              <a href="mailto:samuel.miczuk.ifpr.edu.br">samuel.miczuk.ifpr.edu.br</a>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   );
