@@ -10,7 +10,8 @@ function Header() {
         <img src={logoIFPR} alt="Logo IFPR" />
       </div>
       <div className="title">
-        Sistema de Repositório Digital para os Projetos Finais de Curso do IFPR Campus Assis Chateaubriand
+        <h1>Repositório Digital IFPR</h1>
+        <span>Trabalhos Finais de Curso - Campus Assis Chateaubriand</span>
       </div>
     </header>
   );

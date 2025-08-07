@@ -225,7 +225,7 @@ body {
 }
 
 .banner:hover img {
-  animation: swing 2s ease-in-out infinite;
+  animation: swing 3.2s ease-in-out infinite;
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
 }
 

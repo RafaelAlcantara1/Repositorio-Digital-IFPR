@@ -7,7 +7,7 @@ function Banner() {
   return (
     <div className="banner">
       <Link to="/sobre">
-        <img src={bookImage} alt="Livro aberto" />
+        <img src={bookImage} alt="Livro aberto representando o repositório digital IFPR" />
       </Link>
     </div>
   );

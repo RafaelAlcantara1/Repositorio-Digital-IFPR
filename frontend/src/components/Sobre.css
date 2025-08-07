@@ -2,7 +2,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -17,14 +17,14 @@
 .sobre-section {
   margin-bottom: 3rem;
   padding: 1.5rem;
-  background-color: #f8f9fa;
+  background-color: #ffffff;
   border-radius: 8px;
   transition: transform 0.3s ease;
 }
 
 .sobre-section:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(1, 54, 5, 0.274);
 }
 
 .sobre-section h2 {
