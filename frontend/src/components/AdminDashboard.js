@@ -4,7 +4,6 @@ import { FaPlus, FaSignOutAlt } from 'react-icons/fa';
 import { getCursos } from '../services/cursos';
 import { getArtigos } from '../services/artigos';
 import { logout } from '../services/auth';
-import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [cursos, setCursos] = useState([]);
@@ -49,11 +48,11 @@ const AdminDashboard = () => {
           <h2>Cursos</h2>
           <div className="course-list">
             {cursos.map(curso => (
-              <div key={curso.id_curso} className="course-card">
+              <div key={curso._id} className="course-card">
                 <h3>{curso.nome}</h3>
                 <p>{curso.descricao}</p>
                 <div className="course-actions">
-                  <Link to={`/admin/curso/${curso.id_curso}`} className="edit-button">
+                  <Link to={`/admin/curso/${curso._id}`} className="edit-button">
                     Gerenciar
                   </Link>
                 </div>
@@ -66,13 +65,13 @@ const AdminDashboard = () => {
           <h2>Artigos Recentes</h2>
           <div className="article-list">
             {artigos.slice(0, 5).map(artigo => (
-              <div key={artigo.id_artigo} className="article-card">
+              <div key={artigo._id} className="article-card">
                 <h3>{artigo.titulo}</h3>
                 <p className="article-meta">
-                  Curso: {artigo.curso_nome} | Data: {new Date(artigo.data_submissao).toLocaleDateString()}
+                  Curso: {artigo.id_curso?.nome || 'N/A'} | Ano: {artigo.ano}
                 </p>
                 <div className="article-actions">
-                  <Link to={`/admin/artigo/${artigo.id_artigo}`} className="edit-button">
+                  <Link to={`/admin/artigo/${artigo._id}`} className="edit-button">
                     Editar
                   </Link>
                 </div>

@@ -41,7 +41,7 @@
 }
 
 .dropdown-icon {
-  color: #3498db;
+  color: #22cf30;
   font-size: 1.2rem;
   transition: transform 0.3s ease;
 }
@@ -69,7 +69,7 @@
 
 .course-dropdown-item:hover {
   background-color: #f0f7ff;
-  color: #3498db;
+  color: #15df26;
   padding-left: 1.5rem;
 }
 
@@ -138,12 +138,27 @@
   text-decoration: underline;
 }
 
+.edit-button {
+  background: none !important;
+  border: none !important;
+  color: #ffb300 !important;
+  cursor: pointer !important;
+  padding: 0.5rem !important;
+  transition: color 0.3s ease !important;
+  font-size: 1.2rem !important;
+}
+
+.edit-button:hover {
+  color: #ff8f00 !important;
+}
+
 .delete-button {
   background: none;
   border: none;
   color: #e74c3c;
   cursor: pointer;
   padding: 0.5rem;
+  transition: color 0.3s ease;
 }
 
 .delete-button:hover {

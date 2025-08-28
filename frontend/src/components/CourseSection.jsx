@@ -1,9 +1,10 @@
 // src/components/CourseSection.jsx
 import React, { useState, useEffect } from 'react';
-import { FaFileDownload, FaTrash, FaEye, FaSearch, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaFileDownload, FaTrash, FaEye, FaSearch, FaChevronDown, FaChevronUp, FaPencilAlt } from 'react-icons/fa';
 import { cursoService } from '../services/cursoService';
 import { artigoService } from '../services/artigoService';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
+import ArtigoEditModal from './ArtigoEditModal';
 import { useAuth } from '../contexts/AuthContext';
 import styles from './CourseSection.module.css';
 
@@ -16,7 +17,9 @@ function CourseSection() {
   const [selectedArtigo, setSelectedArtigo] = useState(null);
   const [cursoModalOpen, setCursoModalOpen] = useState(false);
   const [selectedCurso, setSelectedCurso] = useState(null);
-  const { isAuthenticated } = useAuth();
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [artigoToEdit, setArtigoToEdit] = useState(null);
+  const { isAuthenticated, user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredArtigos, setFilteredArtigos] = useState([]);
   const [expandedTypes, setExpandedTypes] = useState({
@@ -38,7 +41,6 @@ function CourseSection() {
         setFilteredArtigos(artigosData);
         setError(null);
       } catch (error) {
-        console.error('Erro ao buscar dados:', error);
         setError('Erro ao carregar dados');
       } finally {
         setLoading(false);
@@ -87,9 +89,9 @@ function CourseSection() {
       const tituloMatch = normalizeText(artigo.titulo).includes(normalizedSearchTerm);
       const palavrasChaveMatch = normalizeText(artigo.palavra_chave).includes(normalizedSearchTerm);
       const anoMatch = normalizeText(artigo.ano).includes(normalizedSearchTerm);
-      const autoresMatch = artigo.Autores?.some(autor => 
-        normalizeText(autor.nome).includes(normalizedSearchTerm)
-      );
+              const autoresMatch = artigo.autores?.some(autor => 
+          normalizeText(autor.nome).includes(normalizedSearchTerm)
+        );
       
       return tituloMatch || palavrasChaveMatch || anoMatch || autoresMatch;
     });
@@ -112,8 +114,8 @@ function CourseSection() {
   };
 
   const openDeleteCursoModal = (curso) => {
-    if (!isAuthenticated()) {
-      alert('Você precisa estar logado para excluir um curso');
+    if (!isAuthenticated() || user?.role !== 'admin') {
+      alert('Você precisa ser administrador para excluir um curso');
       return;
     }
     setSelectedCurso(curso);
@@ -122,11 +124,10 @@ function CourseSection() {
 
   const handleDeleteCurso = async () => {
     try {
-      await cursoService.delete(selectedCurso.id_curso);
-      setCursos(cursos.filter(curso => curso.id_curso !== selectedCurso.id_curso));
+      await cursoService.delete(selectedCurso._id);
+      setCursos(cursos.filter(curso => curso._id !== selectedCurso._id));
       setCursoModalOpen(false);
     } catch (error) {
-      console.error('Erro ao deletar curso:', error);
       if (error.response?.status === 400) {
         alert(error.response.data.error);
       } else {
@@ -136,12 +137,21 @@ function CourseSection() {
   };
 
   const openDeleteModal = (artigo) => {
-    if (!isAuthenticated()) {
-      alert('Você precisa estar logado para excluir um artigo');
+    if (!isAuthenticated() || user?.role !== 'admin') {
+      alert('Você precisa ser administrador para excluir um artigo');
       return;
     }
     setSelectedArtigo(artigo);
     setModalOpen(true);
+  };
+
+  const openEditModal = (artigo) => {
+    if (!isAuthenticated() || user?.role !== 'admin') {
+      alert('Você precisa ser administrador para editar um artigo');
+      return;
+    }
+    setArtigoToEdit(artigo);
+    setEditModalOpen(true);
   };
 
   const handleDeleteArtigo = async () => {
@@ -150,7 +160,6 @@ function CourseSection() {
       setArtigos(artigos.filter(artigo => artigo.id_artigo !== selectedArtigo.id_artigo));
       setModalOpen(false);
     } catch (error) {
-      console.error('Erro ao deletar artigo:', error);
       alert('Erro ao deletar artigo. Por favor, tente novamente.');
     }
   };
@@ -167,9 +176,14 @@ function CourseSection() {
 
   // Função para renderizar os cursos de um tipo específico
   const renderCursosPorTipo = (tipo, cursosDoTipo) => {
-    const artigosDoTipo = filteredArtigos.filter(artigo => 
-      cursosDoTipo.some(curso => curso.id_curso === artigo.id_curso)
-    );
+    const artigosDoTipo = filteredArtigos.filter(artigo => {
+      const match = cursosDoTipo.some(curso => {
+        // Verificar se id_curso é um objeto (populado) ou string (ID)
+        const artigoCursoId = typeof artigo.id_curso === 'object' ? artigo.id_curso._id : artigo.id_curso;
+        return curso._id === artigoCursoId;
+      });
+      return match;
+    });
 
     if (artigosDoTipo.length === 0 && searchTerm) return null;
 
@@ -212,15 +226,18 @@ function CourseSection() {
         )}
         
         {cursosDoTipo.map(curso => {
-          const artigosDoCurso = artigosDoTipo.filter(artigo => artigo.id_curso === curso.id_curso);
+          const artigosDoCurso = artigosDoTipo.filter(artigo => {
+            const artigoCursoId = typeof artigo.id_curso === 'object' ? artigo.id_curso._id : artigo.id_curso;
+            return artigoCursoId === curso._id;
+          });
           
           if (artigosDoCurso.length === 0 && searchTerm) return null;
           
-          return (
-            <div key={curso.id_curso} id={`curso-${curso.id_curso}`} className="course-section">
+                      return (
+              <div key={curso._id} id={`curso-${curso._id}`} className="course-section">
               <div className="course-header">
                 <h3 className="course-title">{curso.nome}</h3>
-                {isAuthenticated() && (
+                {isAuthenticated() && user?.role === 'admin' && (
                   <button onClick={() => openDeleteCursoModal(curso)} className="delete-button">
                     <FaTrash />
                   </button>
@@ -230,7 +247,7 @@ function CourseSection() {
               {artigosDoCurso.length > 0 ? (
                 <div className="articles-list">
                   {artigosDoCurso.map(artigo => (
-                    <div key={artigo.id_artigo} className="article-item">
+                    <div key={artigo._id} className="article-item">
                       <div className="article-content">
                         <h3>{highlightText(artigo.titulo, searchTerm)}</h3>
                         <div className="article-meta">
@@ -239,10 +256,10 @@ function CourseSection() {
                         </div>
                         <div className="authors">
                           <h5>Autores:</h5>
-                          {artigo.Autores && artigo.Autores.map((autor, index) => (
-                            <span key={autor.id_autor}>
+                          {artigo.autores && artigo.autores.map((autor, index) => (
+                            <span key={autor._id}>
                               {highlightText(autor.nome, searchTerm)}
-                              {index < artigo.Autores.length - 1 ? ', ' : ''}
+                              {index < artigo.autores.length - 1 ? ', ' : ''}
                             </span>
                           ))}
                         </div>
@@ -253,10 +270,15 @@ function CourseSection() {
                             <FaEye /> Ver Trabalho
                           </a>
                         )}
-                        {isAuthenticated() && (
-                          <button onClick={() => openDeleteModal(artigo)} className="delete-button">
-                            <FaTrash />
-                          </button>
+                        {isAuthenticated() && user?.role === 'admin' && (
+                          <>
+                                      <button onClick={() => openEditModal(artigo)} className="edit-button">
+            <FaPencilAlt />
+          </button>
+                            <button onClick={() => openDeleteModal(artigo)} className="delete-button">
+                              <FaTrash />
+                            </button>
+                          </>
                         )}
                       </div>
                     </div>
@@ -322,6 +344,12 @@ function CourseSection() {
         onConfirm={handleDeleteCurso}
         projectTitle={selectedCurso?.nome}
         type="curso"
+      />
+
+      <ArtigoEditModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        artigo={artigoToEdit}
       />
     </div>
   );

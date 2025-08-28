@@ -95,7 +95,7 @@ function ArtigoForm() {
       const artigoData = {
         titulo: formData.titulo,
         ano: parseInt(formData.ano),
-        id_curso: parseInt(formData.id_curso),
+        id_curso: formData.id_curso, // Não usar parseInt para ObjectId
         palavra_chave: formData.palavra_chave,
         link: formData.link,
         autores: autoresData
@@ -169,7 +169,7 @@ function ArtigoForm() {
             >
               <option value="">Selecione o curso</option>
               {cursos.map(curso => (
-                <option key={curso.id_curso} value={curso.id_curso}>
+                <option key={curso._id} value={curso._id}>
                   {curso.nome}
                 </option>
               ))}

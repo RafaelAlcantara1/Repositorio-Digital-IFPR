@@ -1,13 +1,12 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AUTH_CONFIG from '../config/auth';
+import { api } from '../services/api';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  console.log('AUTH_CONFIG:', AUTH_CONFIG);
 
   useEffect(() => {
     // Verificar se há um usuário salvo no localStorage
@@ -36,20 +35,13 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('Tentando login com:', { username, password });
       
-      // Fazer requisição para a API de autenticação
-      const response = await fetch(`${AUTH_CONFIG.apiUrl}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
+      // Fazer requisição para a API de autenticação usando a instância api configurada
+      const response = await api.post('/auth/login', {
+        username,
+        password
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = response.data;
       console.log('Resposta do servidor:', data);
 
       if (data.success) {
@@ -100,12 +92,16 @@ export const AuthProvider = ({ children }) => {
     return true;
   };
 
-  if (loading) {
-    return <div>Carregando...</div>;
-  }
+  const value = {
+    user,
+    login,
+    logout,
+    isAuthenticated,
+    loading
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
