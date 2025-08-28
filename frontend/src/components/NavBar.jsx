@@ -76,9 +76,9 @@ function Navbar() {
               <div className="navbar-dropdown">
                 {cursos.map(curso => (
                   <button
-                    key={curso.id_curso}
+                    key={curso._id}
                     className="dropdown-item"
-                    onClick={() => scrollToCourse(curso.id_curso)}
+                    onClick={() => scrollToCourse(curso._id)}
                   >
                     {curso.nome}
                   </button>

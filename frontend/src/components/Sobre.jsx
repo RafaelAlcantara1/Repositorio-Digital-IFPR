@@ -33,18 +33,18 @@ function Sobre() {
       <section className="sobre-section">
         <h2>Benefícios</h2>
         <ul>
-          <li>Preservação digital dos trabalhos acadêmicos</li>
-          <li>Facilidade de acesso à produção científica</li>
-          <li>Visibilidade para os trabalhos dos estudantes</li>
-          <li>Contribuição para o desenvolvimento da pesquisa</li>
-          <li>Integração com a comunidade acadêmica</li>
+          <li>Preservação digital dos trabalhos acadêmicos;</li>
+          <li>Facilidade de acesso à produção científica;</li>
+          <li>Visibilidade para os trabalhos dos estudantes;</li>
+          <li>Contribuição para o desenvolvimento da pesquisa;</li>
+          <li>Integração com a comunidade acadêmica.</li>
         </ul>
       </section>
 
       <section className="sobre-section">
         <h2>Equipe de Desenvolvimento</h2>
         <div className="autores-grid">
-          <div className="autor-card">
+          <div className="autor-card" style={{ '--animation-order': 0 }}>
             <div className="autor-foto">
               <img src={matheusImg} alt="Foto do Matheus" />
             </div>
@@ -56,7 +56,7 @@ function Sobre() {
             </div>
           </div>
 
-          <div className="autor-card">
+          <div className="autor-card" style={{ '--animation-order': 1 }}>
             <div className="autor-foto">
               <img src={rafaelImg} alt="Foto do Rafael" />
             </div>
@@ -68,26 +68,26 @@ function Sobre() {
             </div>
           </div>
 
-          <div className="autor-card">
+          <div className="autor-card" style={{ '--animation-order': 2 }}>
             <div className="autor-foto">
               <img src={michelliImg} alt="Foto da Michelli" />
             </div>
             <h3>Michelli Cristina Galli</h3>
             <p>Professora Orientadora</p>
-            <p>Especialista em Linguagens</p>
+            <p>Doutora em Estudos da Linguagem</p>
             <div className="autor-email">
               <FaEnvelope className="email-icon" />
               <a href="mailto:michelli.gali@ifpr.edu.br">michelli.gali@ifpr.edu.br</a>
             </div>
           </div>
 
-          <div className="autor-card">
+          <div className="autor-card" style={{ '--animation-order': 3 }}>
             <div className="autor-foto">
               <img src={samuelImg} alt="Foto do Samuel" />
             </div>
             <h3>Samuel Stephan Milczuk</h3>
             <p>Professor Orientador</p>
-            <p>Especialista Desenvolvimento Web</p>
+            <p>Mestre em Ciência da Computação</p>
             <div className="autor-email">
               <FaEnvelope className="email-icon" />
               <a href="mailto:samuel.miczuk.ifpr.edu.br">samuel.miczuk.ifpr.edu.br</a>

@@ -27,6 +27,14 @@ export const artigoService = {
 
   // Delete article
   delete: async (id) => {
+    console.log('Serviço: Tentando deletar artigo com ID:', id);
+    console.log('Serviço: Tipo do ID:', typeof id);
+    console.log('Serviço: URL da requisição:', `/artigos/${id}`);
+    
+    if (!id || id === 'undefined') {
+      throw new Error('ID do artigo é obrigatório');
+    }
+    
     const response = await api.delete(`/artigos/${id}`);
     return response.data;
   }

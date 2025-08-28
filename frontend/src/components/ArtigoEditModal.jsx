@@ -115,11 +115,11 @@ function ArtigoEditModal({ isOpen, onClose, artigo }) {
       };
 
       console.log('Artigo a ser editado:', artigo);
-      console.log('ID do artigo:', artigo._id || artigo.id_artigo);
+      console.log('ID do artigo:', artigo._id);
       console.log('ID do curso no formData:', formData.id_curso);
       console.log('Dados para atualização:', artigoData);
 
-      const artigoId = artigo._id || artigo.id_artigo;
+      const artigoId = artigo._id;
       await artigoService.update(artigoId, artigoData);
       
       setSuccess(true);

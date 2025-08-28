@@ -119,4 +119,283 @@
 .dropdown-item:hover {
   background-color: #f5f5f5;
   color: #006633;
+}
+
+/* Estilos para pesquisa avançada */
+.advanced-search-toggle {
+  width: 100%;
+  max-width: 500px;
+  margin: 1rem auto;
+  padding: 0.7rem 1.2rem;
+  background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+  border: 2px solid #28a745;
+  border-radius: 10px;
+  color: #155724;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+
+
+.advanced-search-toggle:hover {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border-color: #1e7e34;
+  color: #0f5132;
+}
+
+
+
+.advanced-search-toggle .rotate {
+  transform: rotate(180deg);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.9rem;
+}
+
+.advanced-search-filters {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1rem auto;
+  max-width: 500px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.advanced-search-filters::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #28a745, #20c997, #28a745);
+  border-radius: 16px 16px 0 0;
+}
+
+.filter-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.filter-group:last-of-type {
+  margin-bottom: 1rem;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.filter-group label::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  border-radius: 1px;
+}
+
+.filter-group select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #2c3e50;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.8rem center;
+  background-repeat: no-repeat;
+  background-size: 1.2em 1.2em;
+  padding-right: 2.5rem;
+}
+
+.filter-group select:hover {
+  border-color: #28a745;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9f0 100%);
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.2);
+  background: #ffffff;
+}
+
+.clear-filters-btn {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+
+
+.clear-filters-btn:hover {
+  background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+}
+
+
+
+/* Responsividade para pesquisa avançada */
+@media (max-width: 768px) {
+  .advanced-search-toggle {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    margin: 0.8rem auto;
+    max-width: 450px;
+  }
+  
+  .advanced-search-filters {
+    padding: 1.2rem;
+    margin: 0.8rem auto;
+    border-radius: 10px;
+    max-width: 450px;
+  }
+  
+  .filter-group {
+    margin-bottom: 1.2rem;
+  }
+  
+  .filter-group label {
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .filter-group select {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.85rem;
+    padding-right: 2.2rem;
+  }
+  
+  .clear-filters-btn {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .advanced-search-toggle {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    max-width: 400px;
+  }
+  
+  .advanced-search-filters {
+    padding: 1rem;
+    margin: 0.6rem auto;
+    border-radius: 8px;
+    max-width: 400px;
+  }
+  
+  .filter-group {
+    margin-bottom: 1rem;
+  }
+  
+  .filter-group label {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .filter-group select {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+    padding-right: 2rem;
+  }
+  
+  .clear-filters-btn {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Animações de entrada */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.advanced-search-filters {
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efeito de foco nos filtros */
+.filter-group:focus-within label {
+  color: #28a745;
+}
+
+.filter-group:focus-within label::after {
+  width: 50px;
+  transition: width 0.3s ease;
+}
+
+/* Estilização dos dropdowns */
+.filter-group select option {
+  background-color: #ffffff;
+  color: #2c3e50;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.filter-group select option:hover {
+  background-color: #e8f5e8;
+  color: #155724;
+}
+
+.filter-group select option:checked {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  font-weight: 600;
+}
+
+/* Estilização do dropdown quando aberto */
+.filter-group select:focus option:checked {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+}
+
+/* Hover nos options */
+.filter-group select option:hover {
+  background-color: #e8f5e8;
+  color: #155724;
 } 

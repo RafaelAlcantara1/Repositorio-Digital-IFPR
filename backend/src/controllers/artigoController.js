@@ -189,12 +189,21 @@ const artigoController = {
   // Deletar artigo
   async delete(req, res) {
     try {
+      console.log('Tentando deletar artigo com ID:', req.params.id);
+      console.log('Tipo do ID:', typeof req.params.id);
+      console.log('ID é válido?', req.params.id && req.params.id !== 'undefined');
+      
+      if (!req.params.id || req.params.id === 'undefined') {
+        return res.status(400).json({ error: 'ID do artigo é obrigatório' });
+      }
+      
       const artigo = await Artigo.findByIdAndDelete(req.params.id);
       
       if (!artigo) {
         return res.status(404).json({ error: 'Artigo não encontrado' });
       }
       
+      console.log('Artigo deletado com sucesso:', artigo._id);
       res.json({ message: 'Artigo deletado com sucesso' });
     } catch (error) {
       console.error('Erro ao deletar artigo:', error);

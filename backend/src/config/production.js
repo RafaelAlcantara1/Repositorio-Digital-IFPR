@@ -5,3 +5,4 @@ module.exports = {
   corsOrigin: process.env.CORS_ORIGIN || '*',
   nodeEnv: 'production'
 };
+

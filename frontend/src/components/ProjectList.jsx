@@ -35,8 +35,8 @@ function ProjectList() {
   const handleDelete = async (id) => {
     try {
       await artigoService.delete(id);
-      setArtigos(artigos.filter(artigo => artigo.id_artigo !== id));
-      setFilteredArtigos(filteredArtigos.filter(artigo => artigo.id_artigo !== id));
+      setArtigos(artigos.filter(artigo => artigo._id !== id));
+      setFilteredArtigos(filteredArtigos.filter(artigo => artigo._id !== id));
       setModalOpen(false);
     } catch (error) {
       console.error('Erro ao deletar projeto:', error);
@@ -113,10 +113,10 @@ function ProjectList() {
 
       <div className="project-list">
         {filteredArtigos.map(artigo => {
-          console.log('Processando artigo:', artigo.id_artigo);
+          console.log('Processando artigo:', artigo._id);
           console.log('Autores deste artigo:', artigo.Autores);
           return (
-            <div key={artigo.id_artigo} className="project-item">
+            <div key={artigo._id} className="project-item">
               <h2>{highlightText(artigo.titulo, searchTerm)}</h2>
               <div className="project-meta">
                 <p><strong>Ano:</strong> {artigo.ano}</p>
@@ -191,7 +191,7 @@ function ProjectList() {
       <DeleteConfirmationModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        onConfirm={() => handleDelete(selectedProject?.id_artigo)}
+        onConfirm={() => handleDelete(selectedProject?._id)}
         projectTitle={selectedProject?.titulo}
       />
     </div>

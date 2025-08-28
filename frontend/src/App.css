@@ -5,7 +5,6 @@
   --dark-text: #333;
   --light-text: #fff;
 }
-
 * {
   margin: 0;
   padding: 0;
@@ -797,7 +796,7 @@ body {
 
 .submit-button {
   padding: 0.75rem 2rem;
-  background-color: var(--primary-green);
+  background-color: #3E6B33 !important;
   color: white;
   border: none;
   border-radius: 4px;
@@ -814,6 +813,12 @@ body {
 .submit-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+/* Regra específica para garantir a cor do submit-button */
+.curso-form .submit-button,
+.admin-section .submit-button {
+  background-color: #3E6B33 !important;
 }
 
 .error-message {
@@ -1173,7 +1178,7 @@ body {
 .submit-button {
   width: 100%;
   padding: 0.75rem;
-  background-color: var(--primary-green);
+  background-color: #3E6B33 !important;
   color: white;
   border: none;
   border-radius: 4px;
