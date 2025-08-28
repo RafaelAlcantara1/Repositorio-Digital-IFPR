@@ -2,14 +2,14 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = 'seu_segredo_jwt_aqui'; // Em produção, use uma variável de ambiente
+const JWT_SECRET = process.env.JWT_SECRET || 'seu_segredo_jwt_aqui'; // Use variável de ambiente
 
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
     // Buscar usuário
-    const user = await User.findOne({ where: { username } });
+    const user = await User.findOne({ username });
     
     if (!user) {
       return res.status(401).json({
@@ -31,7 +31,7 @@ const login = async (req, res) => {
     // Gerar token JWT
     const token = jwt.sign(
       { 
-        id: user.id,
+        id: user._id,
         username: user.username,
         role: user.role
       },
@@ -44,7 +44,7 @@ const login = async (req, res) => {
       data: {
         token,
         user: {
-          id: user.id,
+          id: user._id,
           username: user.username,
           role: user.role
         }

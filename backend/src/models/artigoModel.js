@@ -1,35 +1,33 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const mongoose = require('mongoose');
 
-const Artigo = sequelize.define('Artigo', {
-  id_artigo: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
+const artigoSchema = new mongoose.Schema({
   titulo: {
-    type: DataTypes.STRING(2000),
-    allowNull: false
+    type: String,
+    required: true
   },
   ano: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+    type: Number,
+    required: true
   },
   id_curso: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Curso',
+    required: true
   },
   palavra_chave: {
-    type: DataTypes.STRING(500),
-    allowNull: true
+    type: String,
+    required: false
   },
   link: {
-    type: DataTypes.STRING(2000),
-    allowNull: true
-  }
+    type: String,
+    required: false
+  },
+  autores: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Autor'
+  }]
 }, {
-  tableName: 'artigo',
   timestamps: false
 });
 
-module.exports = Artigo; 
+module.exports = mongoose.model('Artigo', artigoSchema); 

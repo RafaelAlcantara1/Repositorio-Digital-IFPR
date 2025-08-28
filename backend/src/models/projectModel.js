@@ -1,30 +1,24 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const mongoose = require('mongoose');
 
-const Project = sequelize.define('Project', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
+const projectSchema = new mongoose.Schema({
   titulo: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: String,
+    required: true
   },
   descricao: {
-    type: DataTypes.TEXT,
-    allowNull: false
+    type: String,
+    required: true
   },
   ano: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+    type: Number,
+    required: true
   },
   autor: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: String,
+    required: true
   }
 }, {
   timestamps: true
 });
 
-module.exports = Project;
+module.exports = mongoose.model('Project', projectSchema);

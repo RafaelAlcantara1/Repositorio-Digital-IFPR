@@ -1,24 +1,18 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const mongoose = require('mongoose');
 
-const Curso = sequelize.define('Curso', {
-  id_curso: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
+const cursoSchema = new mongoose.Schema({
   nome: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: String,
+    required: true
   },
   tipo_curso: {
-    type: DataTypes.ENUM('TECNICO_INTEGRADO', 'TECNICO_SUBSEQUENTE', 'SUPERIOR'),
-    allowNull: false,
-    defaultValue: 'TECNICO_INTEGRADO'
+    type: String,
+    enum: ['TECNICO_INTEGRADO', 'TECNICO_SUBSEQUENTE', 'SUPERIOR'],
+    default: 'TECNICO_INTEGRADO',
+    required: true
   }
 }, {
-  tableName: 'curso',
   timestamps: false
 });
 
-module.exports = Curso; 
+module.exports = mongoose.model('Curso', cursoSchema); 

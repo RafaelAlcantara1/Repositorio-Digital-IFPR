@@ -1,11 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./config/db');
 const artigoRoutes = require('./routes/artigoRoutes');
 const autorRoutes = require('./routes/autorRoutes');
 const cursoRoutes = require('./routes/cursoRoutes');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
-const sequelize = require('./config/db');
 
 const app = express();
 
@@ -29,6 +29,7 @@ app.get('/', (req, res) => {
   res.json({
     message: 'Bem-vindo à API do Repositório Digital IFPR',
     version: '1.0.0',
+    database: 'MongoDB',
     endpoints: {
       auth: '/api/auth',
       artigos: '/api/artigos',
@@ -49,24 +50,18 @@ app.use('/api/auth', authRoutes);
 // Rota de teste do banco de dados
 app.get('/api/test-db', async (req, res) => {
   try {
-    // Testar conexão com o banco de dados
-    await sequelize.authenticate();
-    
-    // Tentar fazer uma query simples
-    const [results] = await sequelize.query('SELECT 1+1 as result');
+    const mongoose = require('mongoose');
     
     res.json({
       status: 'success',
-      message: 'Conexão com o banco de dados estabelecida com sucesso',
+      message: 'Conexão com o MongoDB estabelecida com sucesso',
       database: {
-        connected: true,
-        queryResult: results[0].result
+        connected: mongoose.connection.readyState === 1,
+        name: mongoose.connection.name,
+        host: mongoose.connection.host
       },
       config: {
-        host: process.env.DB_HOST || 'repositorioteste-repositorioteste.d.aivencloud.com',
-        database: process.env.DB_NAME || 'defaultdb',
-        user: process.env.DB_USER || 'avnadmin',
-        port: process.env.DB_PORT || 24492
+        uri: process.env.MONGODB_URI || 'mongodb+srv://repositorioUser:mr00bullhave@repositorioifpr.yrpdekc.mongodb.net/repositorio'
       },
       timestamp: new Date().toISOString()
     });
@@ -74,14 +69,8 @@ app.get('/api/test-db', async (req, res) => {
     console.error('Erro ao testar banco de dados:', error);
     res.status(500).json({
       status: 'error',
-      message: 'Erro ao conectar com o banco de dados',
+      message: 'Erro ao conectar com o MongoDB',
       error: error.message,
-      config: {
-        host: process.env.DB_HOST || 'repositorioteste-repositorioteste.d.aivencloud.com',
-        database: process.env.DB_NAME || 'defaultdb',
-        user: process.env.DB_USER || 'avnadmin',
-        port: process.env.DB_PORT || 24492
-      },
       timestamp: new Date().toISOString()
     });
   }
@@ -90,12 +79,13 @@ app.get('/api/test-db', async (req, res) => {
 // Rota de teste
 app.get('/api/health', async (req, res) => {
   try {
-    // Testar conexão com o banco de dados
-    await sequelize.authenticate();
+    const mongoose = require('mongoose');
+    const isConnected = mongoose.connection.readyState === 1;
+    
     res.json({ 
       status: 'ok', 
       message: 'API está funcionando!',
-      database: 'conectado',
+      database: isConnected ? 'conectado' : 'desconectado',
       timestamp: new Date().toISOString()
     });
   } catch (error) {
@@ -128,14 +118,5 @@ app.use((err, req, res, next) => {
     path: req.path
   });
 });
-
-// Sincronizar modelos com o banco de dados
-sequelize.sync()
-  .then(() => {
-    console.log('Modelos sincronizados com o banco de dados.');
-  })
-  .catch(err => {
-    console.error('Erro ao sincronizar modelos:', err);
-  });
 
 module.exports = app;

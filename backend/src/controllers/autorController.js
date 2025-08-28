@@ -4,7 +4,7 @@ const autorController = {
   // Listar todos os autores
   async getAll(req, res) {
     try {
-      const autores = await Autor.findAll();
+      const autores = await Autor.find();
       res.json(autores);
     } catch (error) {
       console.error('Erro ao buscar autores:', error);
@@ -15,7 +15,7 @@ const autorController = {
   // Buscar autor por ID
   async getById(req, res) {
     try {
-      const autor = await Autor.findByPk(req.params.id);
+      const autor = await Autor.findById(req.params.id);
       
       if (!autor) {
         return res.status(404).json({ error: 'Autor não encontrado' });
@@ -33,12 +33,13 @@ const autorController = {
     try {
       const { nome, tipo } = req.body;
       
-      const autor = await Autor.create({
+      const autor = new Autor({
         nome,
         tipo
       });
 
-      res.status(201).json(autor);
+      const savedAutor = await autor.save();
+      res.status(201).json(savedAutor);
     } catch (error) {
       console.error('Erro ao criar autor:', error);
       res.status(500).json({ error: 'Erro ao criar autor' });
@@ -50,18 +51,17 @@ const autorController = {
     try {
       const { nome, tipo } = req.body;
       
-      const autor = await Autor.findByPk(req.params.id);
+      const autor = await Autor.findById(req.params.id);
       
       if (!autor) {
         return res.status(404).json({ error: 'Autor não encontrado' });
       }
 
-      await autor.update({
-        nome,
-        tipo
-      });
+      autor.nome = nome || autor.nome;
+      autor.tipo = tipo || autor.tipo;
 
-      res.json(autor);
+      const updatedAutor = await autor.save();
+      res.json(updatedAutor);
     } catch (error) {
       console.error('Erro ao atualizar autor:', error);
       res.status(500).json({ error: 'Erro ao atualizar autor' });
@@ -71,14 +71,13 @@ const autorController = {
   // Deletar autor
   async delete(req, res) {
     try {
-      const autor = await Autor.findByPk(req.params.id);
+      const autor = await Autor.findByIdAndDelete(req.params.id);
       
       if (!autor) {
         return res.status(404).json({ error: 'Autor não encontrado' });
       }
 
-      await autor.destroy();
-      res.status(204).send();
+      res.json({ message: 'Autor deletado com sucesso' });
     } catch (error) {
       console.error('Erro ao deletar autor:', error);
       res.status(500).json({ error: 'Erro ao deletar autor' });

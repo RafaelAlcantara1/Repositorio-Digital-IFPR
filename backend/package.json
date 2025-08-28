@@ -5,7 +5,11 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "create-user": "node src/scripts/createUser.js",
+    "migrate": "node src/scripts/migrateData.js",
+    "sample-data": "node src/scripts/migrateData.js sample",
+    "test-db": "node src/scripts/testConnection.js"
   },
   "keywords": [],
   "author": "",
@@ -19,8 +23,7 @@
     "googleapis": "^149.0.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.0",
-    "mysql2": "^3.14.1",
-    "sequelize": "^6.37.7"
+    "mongoose": "^8.0.0"
   },
   "engines": {
     "node": ">=14.0.0"

@@ -9,18 +9,20 @@ const createUser = async (req, res) => {
     // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    const user = await User.create({
+    const user = new User({
       username,
       password: hashedPassword,
       role: role || 'user'
     });
     
+    const savedUser = await user.save();
+    
     res.status(201).json({
       success: true,
       data: {
-        id: user.id,
-        username: user.username,
-        role: user.role
+        id: savedUser._id,
+        username: savedUser.username,
+        role: savedUser.role
       }
     });
   } catch (error) {
@@ -34,9 +36,7 @@ const createUser = async (req, res) => {
 // Listar todos os usuários
 const getUsers = async (req, res) => {
   try {
-    const users = await User.findAll({
-      attributes: ['id', 'username', 'role', 'createdAt']
-    });
+    const users = await User.find({}, 'username role createdAt');
     
     res.status(200).json({
       success: true,
@@ -56,7 +56,7 @@ const updateUser = async (req, res) => {
     const { id } = req.params;
     const { username, password, role } = req.body;
     
-    const user = await User.findByPk(id);
+    const user = await User.findById(id);
     
     if (!user) {
       return res.status(404).json({
@@ -65,19 +65,18 @@ const updateUser = async (req, res) => {
       });
     }
     
-    const updateData = {};
-    if (username) updateData.username = username;
-    if (password) updateData.password = await bcrypt.hash(password, 10);
-    if (role) updateData.role = role;
+    if (username) user.username = username;
+    if (password) user.password = await bcrypt.hash(password, 10);
+    if (role) user.role = role;
     
-    await user.update(updateData);
+    const updatedUser = await user.save();
     
     res.status(200).json({
       success: true,
       data: {
-        id: user.id,
-        username: user.username,
-        role: user.role
+        id: updatedUser._id,
+        username: updatedUser.username,
+        role: updatedUser.role
       }
     });
   } catch (error) {
@@ -93,7 +92,7 @@ const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
     
-    const user = await User.findByPk(id);
+    const user = await User.findByIdAndDelete(id);
     
     if (!user) {
       return res.status(404).json({
@@ -101,8 +100,6 @@ const deleteUser = async (req, res) => {
         error: 'Usuário não encontrado'
       });
     }
-    
-    await user.destroy();
     
     res.status(200).json({
       success: true,

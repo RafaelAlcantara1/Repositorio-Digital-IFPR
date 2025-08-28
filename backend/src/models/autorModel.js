@@ -1,23 +1,17 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+const mongoose = require('mongoose');
 
-const Autor = sequelize.define('Autor', {
-  id_autor: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
+const autorSchema = new mongoose.Schema({
   nome: {
-    type: DataTypes.STRING(1500),
-    allowNull: false
+    type: String,
+    required: true
   },
   tipo: {
-    type: DataTypes.ENUM('orientador', 'coorientador', 'orientando'),
-    allowNull: false
+    type: String,
+    enum: ['orientador', 'coorientador', 'orientando'],
+    required: true
   }
 }, {
-  tableName: 'autor',
   timestamps: false
 });
 
-module.exports = Autor; 
+module.exports = mongoose.model('Autor', autorSchema); 

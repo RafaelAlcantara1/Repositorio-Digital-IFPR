@@ -1,16 +1,13 @@
-const { Artigo, Autor, ArtigoAutor } = require('../models');
+const { Artigo, Autor } = require('../models');
+const mongoose = require('mongoose');
 
 const artigoController = {
   // Listar todos os artigos
   async getAll(req, res) {
     try {
-      const artigos = await Artigo.findAll({
-        include: [{
-          model: Autor,
-          as: 'Autores',
-          through: { attributes: [] } // Não inclui atributos da tabela de junção
-        }]
-      });
+      const artigos = await Artigo.find()
+        .populate('autores', 'nome tipo')
+        .populate('id_curso', 'nome tipo_curso');
       res.json(artigos);
     } catch (error) {
       console.error('Erro ao buscar artigos:', error);
@@ -21,13 +18,9 @@ const artigoController = {
   // Buscar artigo por ID
   async getById(req, res) {
     try {
-      const artigo = await Artigo.findByPk(req.params.id, {
-        include: [{
-          model: Autor,
-          as: 'Autores',
-          through: { attributes: [] }
-        }]
-      });
+      const artigo = await Artigo.findById(req.params.id)
+        .populate('autores', 'nome tipo')
+        .populate('id_curso', 'nome tipo_curso');
       
       if (!artigo) {
         return res.status(404).json({ error: 'Artigo não encontrado' });
@@ -55,15 +48,14 @@ const artigoController = {
       });
 
       // Criar o artigo
-      const artigo = await Artigo.create({
+      const artigo = new Artigo({
         titulo,
         ano,
-        id_curso,
+        id_curso: id_curso, // Mongoose fará a conversão automaticamente
         palavra_chave,
-        link
+        link,
+        autores: []
       });
-
-      console.log('Artigo criado:', artigo);
 
       if (autores && autores.length > 0) {
         console.log('Processando autores:', autores);
@@ -71,26 +63,23 @@ const artigoController = {
         // Criar os autores e obter seus IDs
         const autoresCriados = await Promise.all(
           autores.map(async (autorData) => {
-            const autor = await Autor.create({
+            const autor = new Autor({
               nome: autorData.nome,
               tipo: autorData.tipo
             });
-            return autor;
+            const savedAutor = await autor.save();
+            return savedAutor._id;
           })
         );
 
-        // Associar os autores ao artigo
-        await artigo.setAutores(autoresCriados);
-        console.log('Autores associados com sucesso');
+        artigo.autores = autoresCriados;
       }
 
-      const artigoComAutores = await Artigo.findByPk(artigo.id_artigo, {
-        include: [{
-          model: Autor,
-          as: 'Autores',
-          through: { attributes: [] }
-        }]
-      });
+      const savedArtigo = await artigo.save();
+
+      const artigoComAutores = await Artigo.findById(savedArtigo._id)
+        .populate('autores', 'nome tipo')
+        .populate('id_curso', 'nome tipo_curso');
 
       console.log('Artigo final com autores:', artigoComAutores);
       res.status(201).json(artigoComAutores);
@@ -106,65 +95,136 @@ const artigoController = {
   // Atualizar artigo
   async update(req, res) {
     try {
+      console.log('Dados recebidos para atualizar artigo:', req.body);
+      console.log('ID do artigo a ser atualizado:', req.params.id);
+      
       const { titulo, ano, id_curso, palavra_chave, link, autores } = req.body;
       
-      const artigo = await Artigo.findByPk(req.params.id);
-      
+      const artigo = await Artigo.findById(req.params.id);
       if (!artigo) {
         return res.status(404).json({ error: 'Artigo não encontrado' });
       }
 
-      await artigo.update({
-        titulo,
-        ano,
-        id_curso,
-        palavra_chave,
-        link
-      });
+      console.log('Artigo encontrado:', artigo);
 
-      if (autores) {
-        await artigo.setAutores(autores);
+      // Atualizar campos básicos
+      artigo.titulo = titulo || artigo.titulo;
+      artigo.ano = ano || artigo.ano;
+      
+      console.log('ID do curso recebido:', id_curso);
+      console.log('Tipo do ID do curso:', typeof id_curso);
+      
+                    if (id_curso) {
+         artigo.id_curso = id_curso;
+         console.log('ID do curso atribuído:', id_curso);
+       }
+      
+      artigo.palavra_chave = palavra_chave || artigo.palavra_chave;
+      artigo.link = link || artigo.link;
+
+      // Atualizar autores se fornecidos
+      if (autores && autores.length > 0) {
+        console.log('Processando autores para atualização:', autores);
+        
+        // Verificar se os autores já existem antes de criar novos
+        const autoresExistentes = await Autor.find({
+          nome: { $in: autores.map(a => a.nome) },
+          tipo: { $in: autores.map(a => a.tipo) }
+        });
+        
+        console.log('Autores existentes encontrados:', autoresExistentes);
+        
+        // Criar apenas autores que não existem
+        const autoresParaCriar = autores.filter(autorData => 
+          !autoresExistentes.some(existente => 
+            existente.nome === autorData.nome && existente.tipo === autorData.tipo
+          )
+        );
+        
+        console.log('Autores para criar:', autoresParaCriar);
+        
+        if (autoresParaCriar.length > 0) {
+          const novosAutores = await Promise.all(
+            autoresParaCriar.map(async (autorData) => {
+              const autor = new Autor({
+                nome: autorData.nome,
+                tipo: autorData.tipo
+              });
+              const savedAutor = await autor.save();
+              return savedAutor._id;
+            })
+          );
+          
+          // Combinar autores existentes com novos
+          const todosAutores = [
+            ...autoresExistentes.map(a => a._id),
+            ...novosAutores
+          ];
+          artigo.autores = todosAutores;
+        } else {
+          artigo.autores = autoresExistentes.map(a => a._id);
+        }
+        
+        console.log('Autores atualizados com sucesso');
       }
 
-      const artigoAtualizado = await Artigo.findByPk(artigo.id_artigo, {
-        include: [{
-          model: Autor,
-          as: 'Autores',
-          through: { attributes: [] }
-        }]
-      });
+      console.log('Salvando artigo atualizado...');
+      const updatedArtigo = await artigo.save();
+      console.log('Artigo salvo com sucesso');
+      
+      const artigoComAutores = await Artigo.findById(updatedArtigo._id)
+        .populate('autores', 'nome tipo')
+        .populate('id_curso', 'nome tipo_curso');
 
-      res.json(artigoAtualizado);
+      res.json(artigoComAutores);
     } catch (error) {
-      console.error('Erro ao atualizar artigo:', error);
-      res.status(500).json({ error: 'Erro ao atualizar artigo' });
+      console.error('Erro detalhado ao atualizar artigo:', error);
+      res.status(500).json({ 
+        error: 'Erro ao atualizar artigo',
+        details: error.message 
+      });
     }
   },
 
   // Deletar artigo
   async delete(req, res) {
     try {
-      const artigo = await Artigo.findByPk(req.params.id, {
-        include: [{
-          model: Autor,
-          as: 'Autores'
-        }]
-      });
+      const artigo = await Artigo.findByIdAndDelete(req.params.id);
       
       if (!artigo) {
         return res.status(404).json({ error: 'Artigo não encontrado' });
       }
-
-      // Remove todas as associações com autores
-      await artigo.setAutores([]);
       
-      // Deleta o artigo
-      await artigo.destroy();
-      
-      res.status(204).send();
+      res.json({ message: 'Artigo deletado com sucesso' });
     } catch (error) {
       console.error('Erro ao deletar artigo:', error);
       res.status(500).json({ error: 'Erro ao deletar artigo' });
+    }
+  },
+
+  // Buscar artigos por curso
+  async getByCurso(req, res) {
+    try {
+      const artigos = await Artigo.find({ id_curso: req.params.cursoId })
+        .populate('autores', 'nome tipo')
+        .populate('id_curso', 'nome tipo_curso');
+      res.json(artigos);
+    } catch (error) {
+      console.error('Erro ao buscar artigos por curso:', error);
+      res.status(500).json({ error: 'Erro ao buscar artigos por curso' });
+    }
+  },
+
+  // Buscar artigos por ano
+  async getByAno(req, res) {
+    try {
+      const artigos = await Artigo.find({ ano: req.params.ano })
+        .populate('autores', 'nome tipo')
+        .populate('id_curso', 'nome tipo_curso');
+      res.json(artigos);
+    } catch (error) {
+      console.error('Erro ao buscar artigos por ano:', error);
+      res.status(500).json({ error: 'Erro ao buscar artigos por ano' });
     }
   }
 };
