@@ -6,6 +6,7 @@ import { artigoService } from '../services/artigoService';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import ArtigoEditModal from './ArtigoEditModal';
 import { useAuth } from '../contexts/AuthContext';
+import { useArtigos } from '../contexts/ArtigoContext';
 import styles from './CourseSection.module.css';
 
 function CourseSection() {
@@ -20,6 +21,7 @@ function CourseSection() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [artigoToEdit, setArtigoToEdit] = useState(null);
   const { isAuthenticated, user } = useAuth();
+  const { updateTotalArtigos, decrementTotalArtigos } = useArtigos();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredArtigos, setFilteredArtigos] = useState([]);
   const [expandedTypes, setExpandedTypes] = useState({
@@ -33,22 +35,47 @@ function CourseSection() {
   const [selectedTipoCurso, setSelectedTipoCurso] = useState('');
   const [selectedAno, setSelectedAno] = useState('');
 
+  // Estados para paginação por curso
+  const [cursoPagination, setCursoPagination] = useState({});
+  const [loadingMore, setLoadingMore] = useState({});
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const [cursosData, artigosData] = await Promise.all([
           cursoService.getAll(),
-          artigoService.getAll()
+          artigoService.getAll() // Carregar todos os artigos para inicializar paginação
         ]);
         console.log('Cursos carregados:', cursosData);
         console.log('Artigos carregados:', artigosData);
-        console.log('Estrutura do primeiro artigo:', artigosData[0]);
+        
         setCursos(cursosData);
         setArtigos(artigosData);
         setFilteredArtigos(artigosData);
+        
+        // Inicializar paginação para cada curso
+        const initialPagination = {};
+        cursosData.forEach(curso => {
+          const artigosDoCurso = artigosData.filter(artigo => {
+            const artigoCursoId = typeof artigo.id_curso === 'object' ? artigo.id_curso._id : artigo.id_curso;
+            return artigoCursoId === curso._id;
+          });
+          
+          initialPagination[curso._id] = {
+            currentPage: 1,
+            totalItems: artigosDoCurso.length,
+            hasNextPage: artigosDoCurso.length > 4,
+            loadedArtigos: artigosDoCurso.slice(0, 4) // Mostrar apenas 4 inicialmente
+          };
+        });
+        
+        setCursoPagination(initialPagination);
+        console.log('Paginação inicializada:', initialPagination);
+        
         setError(null);
       } catch (error) {
+        console.error('Erro ao carregar dados:', error);
         setError('Erro ao carregar dados');
       } finally {
         setLoading(false);
@@ -86,7 +113,21 @@ function CourseSection() {
 
   // Efeito para filtrar artigos quando qualquer filtro mudar
   useEffect(() => {
-    let filtered = [...artigos];
+    // Combinar artigos carregados via paginação com artigos filtrados
+    let allArtigos = [...artigos];
+    
+    // Adicionar artigos da paginação que podem não estar na lista principal
+    Object.values(cursoPagination).forEach(pagination => {
+      if (pagination.loadedArtigos) {
+        pagination.loadedArtigos.forEach(artigo => {
+          if (!allArtigos.find(a => a._id === artigo._id)) {
+            allArtigos.push(artigo);
+          }
+        });
+      }
+    });
+    
+    let filtered = [...allArtigos];
 
     // Filtro por texto (busca atual)
     if (searchTerm.trim()) {
@@ -141,7 +182,7 @@ function CourseSection() {
     }
     
     setFilteredArtigos(filtered);
-  }, [searchTerm, selectedTipoCurso, selectedAno, artigos, cursos]);
+  }, [searchTerm, selectedTipoCurso, selectedAno, artigos, cursos, cursoPagination]);
 
   const toggleTypeExpansion = (tipo) => {
     setExpandedTypes(prev => ({
@@ -160,6 +201,73 @@ function CourseSection() {
   const clearAdvancedFilters = () => {
     setSelectedTipoCurso('');
     setSelectedAno('');
+  };
+
+  // Função para carregar mais artigos de um curso específico
+  const loadMoreArtigos = async (cursoId) => {
+    try {
+      setLoadingMore(prev => ({ ...prev, [cursoId]: true }));
+      
+      // Buscar todos os artigos do curso
+      const response = await artigoService.getByCurso(cursoId, 1, 100); // Buscar todos
+      
+      const todosArtigos = response.artigos || response;
+      const paginationAtual = cursoPagination[cursoId];
+      const artigosJaCarregados = paginationAtual?.loadedArtigos?.length || 4;
+      const proximosArtigos = todosArtigos.slice(artigosJaCarregados, artigosJaCarregados + 6);
+      
+      setCursoPagination(prev => ({
+        ...prev,
+        [cursoId]: {
+          ...prev[cursoId],
+          currentPage: prev[cursoId].currentPage + 1,
+          hasNextPage: todosArtigos.length > (artigosJaCarregados + 6),
+          loadedArtigos: [...(prev[cursoId].loadedArtigos || []), ...proximosArtigos]
+        }
+      }));
+      
+      console.log(`Carregados mais 6 artigos para o curso ${cursoId}`);
+      
+    } catch (error) {
+      console.error('Erro ao carregar mais artigos:', error);
+      
+      // Fallback: carregar todos os artigos do curso da lista local
+      const todosArtigosDoCurso = artigos.filter(artigo => {
+        const artigoCursoId = typeof artigo.id_curso === 'object' ? artigo.id_curso._id : artigo.id_curso;
+        return artigoCursoId === cursoId;
+      });
+      
+      const paginationAtual = cursoPagination[cursoId];
+      const artigosJaCarregados = paginationAtual?.loadedArtigos?.length || 4;
+      const proximosArtigos = todosArtigosDoCurso.slice(artigosJaCarregados, artigosJaCarregados + 6);
+      
+      setCursoPagination(prev => ({
+        ...prev,
+        [cursoId]: {
+          ...prev[cursoId],
+          currentPage: prev[cursoId].currentPage + 1,
+          hasNextPage: todosArtigosDoCurso.length > (artigosJaCarregados + 6),
+          loadedArtigos: [...(prev[cursoId].loadedArtigos || []), ...proximosArtigos]
+        }
+      }));
+      
+      console.log(`Fallback: carregados mais 6 artigos do curso ${cursoId}`);
+    } finally {
+      setLoadingMore(prev => ({ ...prev, [cursoId]: false }));
+    }
+  };
+
+  // Função para carregar menos artigos (voltar a mostrar apenas 4)
+  const loadLessArtigos = (cursoId) => {
+    setCursoPagination(prev => ({
+      ...prev,
+      [cursoId]: {
+        ...prev[cursoId],
+        currentPage: 1,
+        hasNextPage: true,
+        loadedArtigos: prev[cursoId]?.loadedArtigos?.slice(0, 4) || []
+      }
+    }));
   };
 
   const openDeleteCursoModal = (curso) => {
@@ -219,6 +327,7 @@ function CourseSection() {
       await artigoService.delete(selectedArtigo._id);
       setArtigos(artigos.filter(artigo => artigo._id !== selectedArtigo._id));
       setModalOpen(false);
+      decrementTotalArtigos(1); // Decrementar o total de artigos
     } catch (error) {
       console.error('Erro ao deletar artigo:', error);
       alert('Erro ao deletar artigo. Por favor, tente novamente.');
@@ -309,10 +418,26 @@ function CourseSection() {
         )}
         
         {cursosFiltrados.map(curso => {
-          const artigosDoCurso = artigosDoTipo.filter(artigo => {
-            const artigoCursoId = typeof artigo.id_curso === 'object' ? artigo.id_curso._id : artigo.id_curso;
-            return artigoCursoId === curso._id;
-          });
+          // Determinar quais artigos mostrar baseado no contexto
+          let artigosDoCurso = [];
+          
+          // Se há pesquisa ativa ou filtros, mostrar todos os artigos filtrados do curso
+          if (searchTerm.trim() || selectedTipoCurso || selectedAno) {
+            artigosDoCurso = artigosDoTipo.filter(artigo => {
+              const artigoCursoId = typeof artigo.id_curso === 'object' ? artigo.id_curso._id : artigo.id_curso;
+              return artigoCursoId === curso._id;
+            });
+          } else {
+            // Se não há pesquisa/filtros, usar a paginação normal
+            if (cursoPagination[curso._id]?.loadedArtigos) {
+              artigosDoCurso = cursoPagination[curso._id].loadedArtigos;
+            } else {
+              artigosDoCurso = artigosDoTipo.filter(artigo => {
+                const artigoCursoId = typeof artigo.id_curso === 'object' ? artigo.id_curso._id : artigo.id_curso;
+                return artigoCursoId === curso._id;
+              });
+            }
+          }
           
           // Se há termo de pesquisa, verificar se o curso corresponde
           if (searchTerm) {
@@ -328,10 +453,29 @@ function CourseSection() {
             return null;
           }
           
-                      return (
-              <div key={curso._id} id={`curso-${curso._id}`} className={styles['course-section']}>
+          // Contar total de artigos do curso para mostrar no botão (independente dos filtros)
+          const totalArtigosCurso = artigos.filter(artigo => {
+            const artigoCursoId = typeof artigo.id_curso === 'object' ? artigo.id_curso._id : artigo.id_curso;
+            return artigoCursoId === curso._id;
+          }).length;
+          
+          // Debug: verificar se a paginação está funcionando
+          console.log(`Curso ${curso.nome}:`, {
+            totalArtigosCurso,
+            artigosCarregados: cursoPagination[curso._id]?.loadedArtigos?.length || 0,
+            hasNextPage: cursoPagination[curso._id]?.hasNextPage,
+            pagination: cursoPagination[curso._id]
+          });
+          
+          return (
+            <div key={curso._id} id={`curso-${curso._id}`} className={styles['course-section']}>
               <div className="course-header">
-                <h3 className="course-title">{curso.nome}</h3>
+                <div className="course-title-container">
+                  <h3 className="course-title">{curso.nome}</h3>
+                  <span className="course-articles-count">
+                    {totalArtigosCurso === 0 ? 'Nenhum artigo' : `${totalArtigosCurso} ${totalArtigosCurso === 1 ? 'artigo' : 'artigos'}`}
+                  </span>
+                </div>
                 {isAuthenticated() && user?.role === 'admin' && (
                   <button onClick={() => openDeleteCursoModal(curso)} className="delete-button">
                     <FaTrash />
@@ -367,7 +511,7 @@ function CourseSection() {
                         )}
                         {isAuthenticated() && user?.role === 'admin' && (
                           <>
-                                      <button onClick={() => openEditModal(artigo)} className={styles['edit-button']}>
+                            <button onClick={() => openEditModal(artigo)} className={styles['edit-button']}>
                               <FaPencilAlt />
                             </button>
                             <button onClick={() => openDeleteModal(artigo)} className={styles['delete-button']}>
@@ -378,6 +522,53 @@ function CourseSection() {
                       </div>
                     </div>
                   ))}
+                  
+                  {/* Botões de Paginação - só aparecem quando não há pesquisa ativa */}
+                  {totalArtigosCurso > 4 && !searchTerm.trim() && !selectedTipoCurso && !selectedAno && (
+                    <div className={styles['load-more-container']}>
+                      <div className={styles['pagination-buttons']}>
+                        {/* Botão "Carregar Menos" - só aparece quando há mais de 4 artigos carregados */}
+                        {cursoPagination[curso._id]?.loadedArtigos?.length > 4 && (
+                          <button
+                            className={styles['load-less-btn']}
+                            onClick={() => loadLessArtigos(curso._id)}
+                          >
+                            Mostrar Menos Artigos
+                          </button>
+                        )}
+                        
+                        {/* Botão "Carregar Mais" */}
+                        {totalArtigosCurso > (cursoPagination[curso._id]?.loadedArtigos?.length || 4) && (
+                          <button
+                            className={styles['load-more-btn']}
+                            onClick={() => loadMoreArtigos(curso._id)}
+                            disabled={loadingMore[curso._id]}
+                          >
+                            {loadingMore[curso._id] ? 'Carregando...' : 'Carregar Mais Artigos'}
+                          </button>
+                        )}
+                        
+                        {/* Mensagem quando todos os artigos estão carregados */}
+                        {totalArtigosCurso <= (cursoPagination[curso._id]?.loadedArtigos?.length || 4) && (
+                          <p className={styles['all-articles-loaded']}>
+                            Todos os {totalArtigosCurso} artigos deste curso foram carregados
+                          </p>
+                        )}
+                      </div>
+                      
+                      {/* Indicador de artigos carregados */}
+                      <div className={styles['articles-counter']}>
+                        Mostrando {cursoPagination[curso._id]?.loadedArtigos?.length || 4} de {totalArtigosCurso} artigos
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Indicador quando há pesquisa ativa */}
+                  {(searchTerm.trim() || selectedTipoCurso || selectedAno) && artigosDoCurso.length > 0 && (
+                    <div className={styles['search-results-info']}>
+                      <p>Mostrando {artigosDoCurso.length} resultado(s) da pesquisa</p>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <p className="no-articles">
@@ -392,7 +583,18 @@ function CourseSection() {
   };
 
   if (loading) {
-    return <div className="loading">Carregando...</div>;
+    return (
+      <div className={styles.loading}>
+        <div className={styles.loadingContent}>
+          <div className={styles.loadingText}>Carregando artigos</div>
+          <div className={styles.booksAnimation}>
+            <div className={`${styles.book} ${styles.book1}`}>📖</div>
+            <div className={`${styles.book} ${styles.book2}`}>📖</div>
+            <div className={`${styles.book} ${styles.book3}`}>📖</div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -404,15 +606,29 @@ function CourseSection() {
       <h2 className="section-title">Cursos e Trabalhos</h2>
       
       <div className="search-container">
-        <div className="search-box">
-          <FaSearch className="search-icon" />
-          <input
-            type="text"
-            placeholder="Buscar por título, palavras-chave, autores, ano ou nome do curso..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
+        <div className={styles['search-wrapper']}>
+          <div className={styles['search-box']}>
+            <FaSearch className={styles['search-icon']} />
+            <input
+              type="text"
+              placeholder="Buscar por título, palavras-chave, autores, ano ou nome do curso..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={styles['search-input']}
+            />
+          </div>
+          
+          {/* Contador de resultados - só aparece quando há pesquisa ou filtros */}
+          {(searchTerm.trim() || selectedTipoCurso || selectedAno) && (
+            <div className={styles['results-counter']}>
+              <span className={styles['results-number']}>
+                {filteredArtigos.length}
+              </span>
+              <span className={styles['results-text']}>
+                {filteredArtigos.length === 1 ? 'resultado' : 'resultados'}
+              </span>
+            </div>
+          )}
         </div>
         
         {/* Botão para mostrar/ocultar pesquisa avançada */}
@@ -426,13 +642,14 @@ function CourseSection() {
         
         {/* Pesquisa avançada */}
         {showAdvancedSearch && (
-          <div className="advanced-search-filters">
-            <div className="filter-group">
+          <div className={styles['advanced-search-filters']}>
+            <div className={styles['filter-group']}>
               <label htmlFor="tipo-curso">Tipo de Curso:</label>
               <select
                 id="tipo-curso"
                 value={selectedTipoCurso}
                 onChange={(e) => setSelectedTipoCurso(e.target.value)}
+                className={styles['filter-select']}
               >
                 <option value="">Todos os tipos</option>
                 <option value="TECNICO_INTEGRADO">Técnico Integrado ao Ensino Médio</option>
@@ -441,12 +658,13 @@ function CourseSection() {
               </select>
             </div>
             
-            <div className="filter-group">
+            <div className={styles['filter-group']}>
               <label htmlFor="ano">Ano de Conclusão:</label>
               <select
                 id="ano"
                 value={selectedAno}
                 onChange={(e) => setSelectedAno(e.target.value)}
+                className={styles['filter-select']}
               >
                 <option value="">Todos os anos</option>
                 {Array.from(new Set(artigos.map(artigo => artigo.ano)))
@@ -458,12 +676,14 @@ function CourseSection() {
               </select>
             </div>
             
-            <button 
-              className="clear-filters-btn"
-              onClick={clearAdvancedFilters}
-            >
-              Limpar Filtros
-            </button>
+            <div className={styles['filter-actions']}>
+              <button 
+                className={styles['clear-filters-btn']}
+                onClick={clearAdvancedFilters}
+              >
+                Limpar Filtros
+              </button>
+            </div>
           </div>
         )}
       </div>

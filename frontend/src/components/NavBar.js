@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FaChevronDown, FaBars, FaTimes, FaSignOutAlt } from 'react-icons/fa';
+import { FaChevronDown, FaBars, FaTimes, FaSignOutAlt, FaFileAlt } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
+import { useArtigos } from '../contexts/ArtigoContext';
 import './NavBar.css';
 
 const NavBar = () => {
@@ -9,6 +10,7 @@ const NavBar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { user, isAuthenticated, logout } = useAuth();
+  const { totalArtigos, loading } = useArtigos();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -78,55 +80,65 @@ const NavBar = () => {
       </div>
       
       <div className={`nav-links ${isMobileMenuOpen ? 'mobile-menu-open' : ''}`}>
-        <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Início</Link>
-        <Link to="/sobre" onClick={() => setIsMobileMenuOpen(false)}>Sobre</Link>
-        <div className="dropdown" ref={dropdownRef}>
-          <button 
-            className="dropdown-button"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          >
-            Cursos <FaChevronDown className={`dropdown-icon ${isDropdownOpen ? 'rotate' : ''}`} />
-          </button>
-          {isDropdownOpen && (
-            <div className="dropdown-content">
-              <button
-                onClick={() => handleCourseCategoryClick('cursos-tecnicos-integrados')}
-                className="dropdown-item"
-              >
-                Cursos Técnicos Integrados ao Ensino Médio
-              </button>
-              <button
-                onClick={() => handleCourseCategoryClick('cursos-superiores')}
-                className="dropdown-item"
-              >
-                Cursos Superiores
-              </button>
-              <button
-                onClick={() => handleCourseCategoryClick('cursos-tecnicos-subsequentes')}
-                className="dropdown-item"
-              >
-                Cursos Técnicos Subsequentes
-              </button>
-            </div>
+        <div className="nav-links-left">
+          <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Início</Link>
+          <Link to="/sobre" onClick={() => setIsMobileMenuOpen(false)}>Sobre</Link>
+          <div className="dropdown" ref={dropdownRef}>
+            <button 
+              className="dropdown-button"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              Cursos <FaChevronDown className={`dropdown-icon ${isDropdownOpen ? 'rotate' : ''}`} />
+            </button>
+            {isDropdownOpen && (
+              <div className="dropdown-content">
+                <button
+                  onClick={() => handleCourseCategoryClick('cursos-tecnicos-integrados')}
+                  className="dropdown-item"
+                >
+                  Cursos Técnicos Integrados ao Ensino Médio
+                </button>
+                <button
+                  onClick={() => handleCourseCategoryClick('cursos-superiores')}
+                  className="dropdown-item"
+                >
+                  Cursos Superiores
+                </button>
+                <button
+                  onClick={() => handleCourseCategoryClick('cursos-tecnicos-subsequentes')}
+                  className="dropdown-item"
+                >
+                  Cursos Técnicos Subsequentes
+                </button>
+              </div>
+            )}
+          </div>
+          {isAuthenticated() ? (
+            <>
+              <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)}>Painel de Controle</Link>
+              <div className="user-info">
+                <span className="welcome-text">Olá, Coordenador(a)!</span>
+                <button 
+                  className="nav-button" 
+                  onClick={handleLogout}
+                  style={{ marginLeft: '10px' }}
+                >
+                  <FaSignOutAlt /> Sair
+                </button>
+              </div>
+            </>
+          ) : (
+            <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Área da Coordenação</Link>
           )}
         </div>
-        {isAuthenticated() ? (
-          <>
-            <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)}>Painel de Controle</Link>
-            <div className="user-info">
-              <span className="welcome-text">Olá, Coordenador(a)!</span>
-              <button 
-                className="nav-button" 
-                onClick={handleLogout}
-                style={{ marginLeft: '10px' }}
-              >
-                <FaSignOutAlt /> Sair
-              </button>
-            </div>
-          </>
-        ) : (
-          <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Área da Coordenação</Link>
-        )}
+        
+        {/* Contador de artigos na extrema direita */}
+        <div className="artigos-counter">
+          <FaFileAlt className="artigos-icon" />
+          <span className="artigos-text">
+            {loading ? '...' : `${totalArtigos} artigos`}
+          </span>
+        </div>
       </div>
     </nav>
   );

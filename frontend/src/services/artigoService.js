@@ -1,9 +1,24 @@
 import { api } from './api';
 
 export const artigoService = {
-  // Get all articles
-  getAll: async () => {
-    const response = await api.get('/artigos');
+  // Get all articles with pagination
+  getAll: async (page = 1, limit = 6, cursoId = null) => {
+    const params = new URLSearchParams();
+    if (page > 1) params.append('page', page);
+    if (limit !== 6) params.append('limit', limit);
+    if (cursoId) params.append('cursoId', cursoId);
+    
+    const response = await api.get(`/artigos?${params.toString()}`);
+    return response.data;
+  },
+
+  // Get articles by course with pagination
+  getByCurso: async (cursoId, page = 1, limit = 6) => {
+    const params = new URLSearchParams();
+    if (page > 1) params.append('page', page);
+    if (limit !== 6) params.append('limit', limit);
+    
+    const response = await api.get(`/artigos/curso/${cursoId}?${params.toString()}`);
     return response.data;
   },
 

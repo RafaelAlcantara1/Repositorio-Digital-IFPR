@@ -425,6 +425,19 @@ body {
   color: white;
 }
 
+.course-title-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.course-articles-count {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  font-style: italic;
+}
+
 .course-title {
   margin: 0;
   font-size: 1.5rem;

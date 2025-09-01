@@ -1,8 +1,4 @@
-.course-title-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+/* Estilos para os botões de paginação foram movidos para CourseSection.module.css */
 
 .course-type {
   font-size: 0.9rem;
@@ -215,4 +211,6 @@
   color: #666;
   padding: 2rem;
   font-style: italic;
-} 
+}
+
+/* Estilos para os botões de paginação foram movidos para CourseSection.module.css */ 

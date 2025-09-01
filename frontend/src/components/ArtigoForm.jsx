@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { artigoService } from '../services/artigoService';
 import { cursoService } from '../services/cursoService';
 import { FaPlus, FaTrash } from 'react-icons/fa';
+import { useArtigos } from '../contexts/ArtigoContext';
 
 function ArtigoForm() {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ function ArtigoForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const { updateTotalArtigos } = useArtigos();
 
   useEffect(() => {
     async function fetchCursos() {
@@ -114,6 +116,7 @@ function ArtigoForm() {
         link: '',
         autores: [{ nome: '', tipo: 'orientando' }]
       });
+      updateTotalArtigos(); // Atualiza o total de artigos no contexto
     } catch (err) {
       console.error('Erro ao cadastrar artigo:', err);
       setError(err.response?.data?.error || 'Erro ao cadastrar artigo. Por favor, tente novamente.');
