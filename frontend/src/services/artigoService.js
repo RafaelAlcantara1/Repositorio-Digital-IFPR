@@ -8,7 +8,7 @@ export const artigoService = {
     if (limit !== 6) params.append('limit', limit);
     if (cursoId) params.append('cursoId', cursoId);
     
-    const response = await api.get(`/artigos?${params.toString()}`);
+    const response = await api.get(`/api/artigos?${params.toString()}`);
     return response.data;
   },
 
@@ -18,25 +18,25 @@ export const artigoService = {
     if (page > 1) params.append('page', page);
     if (limit !== 6) params.append('limit', limit);
     
-    const response = await api.get(`/artigos/curso/${cursoId}?${params.toString()}`);
+    const response = await api.get(`/api/artigos/curso/${cursoId}?${params.toString()}`);
     return response.data;
   },
 
   // Get article by ID
   getById: async (id) => {
-    const response = await api.get(`/artigos/${id}`);
+    const response = await api.get(`/api/artigos/${id}`);
     return response.data;
   },
 
   // Create new article
   create: async (artigoData) => {
-    const response = await api.post('/artigos', artigoData);
+    const response = await api.post('/api/artigos', artigoData);
     return response.data;
   },
 
   // Update article
   update: async (id, artigoData) => {
-    const response = await api.put(`/artigos/${id}`, artigoData);
+    const response = await api.put(`/api/artigos/${id}`, artigoData);
     return response.data;
   },
 
@@ -50,7 +50,7 @@ export const artigoService = {
       throw new Error('ID do artigo é obrigatório');
     }
     
-    const response = await api.delete(`/artigos/${id}`);
+    const response = await api.delete(`/api/artigos/${id}`);
     return response.data;
   }
 }; 

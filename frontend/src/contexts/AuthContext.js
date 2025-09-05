@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       console.log('Tentando login com:', { username, password });
       
       // Fazer requisição para a API de autenticação usando a instância api configurada
-      const response = await api.post('/auth/login', {
+      const response = await api.post('/api/auth/login', {
         username,
         password
       });

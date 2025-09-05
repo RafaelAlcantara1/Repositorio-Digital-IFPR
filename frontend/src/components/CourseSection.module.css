@@ -305,7 +305,7 @@
 /* Novos estilos para botões de paginação com tema verde */
 .load-more-container {
   margin-top: 1.5rem;
-  padding: 1rem;
+  padding: 0.8rem;
   background-color: #f8f9fa;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
@@ -414,23 +414,63 @@
 @media (max-width: 768px) {
   .pagination-buttons {
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.5rem;
   }
   
   .load-more-btn,
   .load-less-btn {
     width: 100%;
     justify-content: center;
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
   }
   
   .load-more-container {
-    padding: 0.8rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin-top: 1rem;
   }
   
   .articles-counter {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.4rem;
+  }
+
+  .all-articles-loaded {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .load-more-btn,
+  .load-less-btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+
+  .load-more-container {
+    margin-top: 0.75rem;
+    padding: 0.4rem;
+    border-radius: 5px;
+  }
+
+  .pagination-buttons {
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .articles-counter {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.35rem;
+  }
+
+  .all-articles-loaded {
+    font-size: 0.7rem;
+    padding: 0.4rem;
   }
 }
 
@@ -586,6 +626,75 @@
   color: #2c3e50;
   margin-bottom: 2rem;
   text-align: center;
+}
+
+/* Melhorias para telas menores */
+@media (max-width: 768px) {
+  .content-section {
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .course-section {
+    padding: 0.75rem;
+  }
+
+  .course-title {
+    font-size: 1.1rem;
+  }
+
+  .article-item {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .article-meta {
+    font-size: 0.85rem;
+  }
+
+  .authors h5 {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-section {
+    padding: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .course-section {
+    padding: 0.6rem;
+  }
+
+  .course-title {
+    font-size: 1rem;
+  }
+
+  .article-item {
+    padding: 0.6rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .article-content h3,
+  .article-content h4 {
+    font-size: 1rem;
+  }
+
+  .search-box {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .search-input {
+    font-size: 0.9rem;
+  }
 }
 
 .search-container {
@@ -859,7 +968,7 @@
 
 .search-box {
   flex: 1;
-  min-width: 500px;
+  min-width: 0;
   width: 100%;
   display: flex;
   align-items: center;

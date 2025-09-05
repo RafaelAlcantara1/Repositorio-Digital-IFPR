@@ -1,0 +1,336 @@
+/* Modal Fullscreen Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.modalContainer {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease;
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #004d26 0%, #006633 100%);
+  color: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+}
+
+.modalTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.closeButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.navButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.modalContent {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.articleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.metaInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #004d26;
+}
+
+.metaItem {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.metaItem strong {
+  color: #004d26;
+  font-weight: 600;
+}
+
+.authorsSection h3 {
+  color: #004d26;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.authorsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.authorItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.authorItem:hover {
+  border-color: #004d26;
+  box-shadow: 0 2px 8px rgba(0, 77, 38, 0.1);
+}
+
+.authorName {
+  font-weight: 500;
+  color: #333;
+}
+
+.authorType {
+  color: #666;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.actionsSection {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #004d26;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.actionButton:hover {
+  background: #003d1f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 77, 38, 0.3);
+}
+
+.modalFooter {
+  padding: 1.5rem 2rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.navigationButtons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.navButtonLarge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #004d26;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.navButtonLarge:hover {
+  background: #003d1f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 77, 38, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .modalOverlay {
+    padding: 0.5rem;
+  }
+
+  .modalContainer {
+    max-height: 95vh;
+    border-radius: 8px;
+  }
+
+  .modalHeader {
+    padding: 1rem 1.5rem;
+  }
+
+  .modalTitle {
+    font-size: 1.1rem;
+  }
+
+  .modalContent {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .metaInfo {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .actionsSection {
+    flex-direction: column;
+  }
+
+  .actionButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .modalFooter {
+    padding: 1rem 1.5rem;
+  }
+
+  .navigationButtons {
+    flex-direction: column;
+  }
+
+  .navButtonLarge {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalOverlay {
+    padding: 0.25rem;
+  }
+
+  .modalHeader {
+    padding: 0.75rem 1rem;
+  }
+
+  .modalTitle {
+    font-size: 1rem;
+  }
+
+  .modalContent {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .metaInfo {
+    padding: 0.75rem;
+  }
+
+  .modalFooter {
+    padding: 0.75rem 1rem;
+  }
+}
+

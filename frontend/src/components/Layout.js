@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './Header';
 import NavBar from './NavBar';
 import Footer from './Footer';
+import BackToTop from './BackToTop';
 import './Layout.css';
 
 const Layout = ({ children }) => {
@@ -13,6 +14,7 @@ const Layout = ({ children }) => {
         {children}
       </main>
       <Footer />
+      <BackToTop />
     </div>
   );
 };
