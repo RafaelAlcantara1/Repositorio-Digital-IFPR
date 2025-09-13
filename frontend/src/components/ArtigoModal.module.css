@@ -334,3 +334,453 @@
   }
 }
 
+/* Page-specific styles */
+.pageContainer {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 2rem;
+}
+
+.pageHeader {
+  background: #3E6B33;
+  color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(62, 107, 51, 0.2);
+}
+
+.pageHeaderContent {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.pageTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.pageActions {
+  background: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.pageActionsContent {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #3E6B33;
+  border: 1px solid #3E6B33;
+  color: white;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background: #2d4d26;
+  border-color: #2d4d26;
+}
+
+.shareButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #3E6B33;
+  border: 1px solid #3E6B33;
+  color: white;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.shareButton:hover {
+  background: #2d4d26;
+  border-color: #2d4d26;
+}
+
+.pageContent {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.contentCard {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+}
+
+.articleInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.metaInfo {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  border-left: 4px solid #3E6B33;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.metaItem {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e9ecef;
+  display: block;
+  width: 100%;
+}
+
+.metaItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.metaItem strong {
+  color: #3E6B33;
+  font-weight: 600;
+}
+
+.authorsSection {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 6px;
+  border-left: 4px solid #3E6B33;
+}
+
+.authorsSection h3 {
+  color: #3E6B33;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.authorsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.authorItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.authorItem:hover {
+  border-color: #3E6B33;
+  box-shadow: 0 2px 4px rgba(62, 107, 51, 0.1);
+}
+
+.authorName {
+  font-weight: 500;
+  color: #333;
+}
+
+.authorType {
+  color: #666;
+  font-size: 0.9rem;
+  font-style: italic;
+  background: #f8f9fa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.actionsSection {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1.5rem 0;
+  border-top: 1px solid #e9ecef;
+  margin-top: 1.5rem;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #3E6B33;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.actionButton:hover {
+  background: #2d4d26;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(62, 107, 51, 0.2);
+}
+
+.pageFooter {
+  max-width: 1000px;
+  margin: 2rem auto 0;
+}
+
+.footerCard {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+}
+
+.navigationButtons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.navButtonLarge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: #3E6B33;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.navButtonLarge:hover {
+  background: #2d4d26;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(62, 107, 51, 0.2);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.loadingContent {
+  text-align: center;
+}
+
+.loadingText {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.errorContainer {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.errorContainer h2 {
+  color: #dc3545;
+  margin-bottom: 1rem;
+}
+
+.errorContainer p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+/* Mobile responsive for page */
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: 1rem;
+  }
+
+  .pageHeader {
+    padding: 1.5rem;
+  }
+
+  .pageTitle {
+    font-size: 1.1rem;
+  }
+
+  .pageActions {
+    padding: 0.75rem 1rem;
+  }
+
+  .pageActionsContent {
+    flex-direction: row;
+    gap: 0.4rem;
+  }
+
+  .backButton,
+  .shareButton {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    flex: 1;
+  }
+
+  .contentCard {
+    padding: 1rem;
+  }
+
+  .articleInfo {
+    gap: 1rem;
+  }
+
+  .metaInfo {
+    padding: 1rem;
+  }
+
+  .metaItem {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    padding: 0.4rem 0;
+  }
+
+  .authorsSection {
+    padding: 0.75rem;
+  }
+
+  .actionsSection {
+    flex-direction: column;
+  }
+
+  .actionButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .navigationButtons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .navButtonLarge {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageContainer {
+    padding: 0.5rem;
+  }
+
+  .pageHeader {
+    padding: 0.75rem;
+  }
+
+  .pageTitle {
+    font-size: 0.9rem;
+  }
+
+  .pageActions {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .pageActionsContent {
+    flex-direction: row;
+    gap: 0.3rem;
+  }
+
+  .backButton,
+  .shareButton {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.7rem;
+    flex: 1;
+  }
+
+  .contentCard {
+    padding: 0.75rem;
+  }
+
+  .articleInfo {
+    gap: 0.75rem;
+  }
+
+  .metaInfo {
+    padding: 0.75rem;
+  }
+
+  .metaItem {
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+    padding: 0.3rem 0;
+  }
+
+  .authorsSection {
+    padding: 0.5rem;
+  }
+
+  .authorsSection h3 {
+    font-size: 1rem;
+  }
+
+  .authorItem {
+    padding: 0.4rem 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .authorType {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.3rem;
+  }
+
+  .actionsSection {
+    padding: 0.75rem 0;
+  }
+
+  .actionButton {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .footerCard {
+    padding: 0.75rem;
+  }
+
+  .navButtonLarge {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}
+

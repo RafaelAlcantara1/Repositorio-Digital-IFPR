@@ -8,6 +8,7 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import ArtigoForm from '../components/ArtigoForm';
 import CursoForm from '../components/CursoForm';
 import Sobre from '../components/Sobre';
+import ArtigoPage from '../components/ArtigoPage';
 import { useAuth } from '../contexts/AuthContext';
 import '../styles/Admin.css';
 
@@ -49,6 +50,10 @@ const routes = [
   {
     path: '/login',
     element: <Layout><Login /></Layout>
+  },
+  {
+    path: '/artigo/:id',
+    element: <Layout><ArtigoPage /></Layout>
   },
   {
     path: '/admin',

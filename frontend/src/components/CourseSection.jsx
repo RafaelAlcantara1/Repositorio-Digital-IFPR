@@ -1,16 +1,18 @@
 // src/components/CourseSection.jsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaFileDownload, FaTrash, FaEye, FaSearch, FaChevronDown, FaChevronUp, FaPencilAlt } from 'react-icons/fa';
 import { cursoService } from '../services/cursoService';
 import { artigoService } from '../services/artigoService';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 import ArtigoEditModal from './ArtigoEditModal';
-import ArtigoModal from './ArtigoModal';
 import { useAuth } from '../contexts/AuthContext';
 import { useArtigos } from '../contexts/ArtigoContext';
 import styles from './CourseSection.module.css';
 
 function CourseSection() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [cursos, setCursos] = useState([]);
   const [artigos, setArtigos] = useState([]);
   const [error, setError] = useState(null);
@@ -21,8 +23,6 @@ function CourseSection() {
   const [selectedCurso, setSelectedCurso] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [artigoToEdit, setArtigoToEdit] = useState(null);
-  const [artigoModalOpen, setArtigoModalOpen] = useState(false);
-  const [selectedArtigoForModal, setSelectedArtigoForModal] = useState(null);
   const { isAuthenticated, user } = useAuth();
   const { updateTotalArtigos, decrementTotalArtigos } = useArtigos();
   const [searchTerm, setSearchTerm] = useState('');
@@ -316,41 +316,12 @@ function CourseSection() {
     setEditModalOpen(true);
   };
 
-  const openArtigoModal = (artigo) => {
-    setSelectedArtigoForModal(artigo);
-    setArtigoModalOpen(true);
+  const openArtigoPage = (artigo) => {
+    navigate(`/artigo/${artigo._id}`, { 
+      state: { from: location.pathname } 
+    });
   };
 
-  const closeArtigoModal = () => {
-    setArtigoModalOpen(false);
-    setSelectedArtigoForModal(null);
-  };
-
-  const navigateToPrevious = () => {
-    if (!selectedArtigoForModal) return;
-    
-    // Encontrar o artigo anterior na lista de artigos carregados
-    const allLoadedArtigos = Object.values(cursoPagination)
-      .flatMap(p => p.loadedArtigos || []);
-    
-    const currentIndex = allLoadedArtigos.findIndex(a => a._id === selectedArtigoForModal._id);
-    if (currentIndex > 0) {
-      setSelectedArtigoForModal(allLoadedArtigos[currentIndex - 1]);
-    }
-  };
-
-  const navigateToNext = () => {
-    if (!selectedArtigoForModal) return;
-    
-    // Encontrar o próximo artigo na lista de artigos carregados
-    const allLoadedArtigos = Object.values(cursoPagination)
-      .flatMap(p => p.loadedArtigos || []);
-    
-    const currentIndex = allLoadedArtigos.findIndex(a => a._id === selectedArtigoForModal._id);
-    if (currentIndex < allLoadedArtigos.length - 1) {
-      setSelectedArtigoForModal(allLoadedArtigos[currentIndex + 1]);
-    }
-  };
 
   const handleDeleteArtigo = async () => {
     try {
@@ -543,7 +514,7 @@ function CourseSection() {
                         </div>
                       </div>
                       <div className="article-actions">
-                        <button onClick={() => openArtigoModal(artigo)} className="view-link">
+                        <button onClick={() => openArtigoPage(artigo)} className="view-link">
                           <FaEye /> Ver Detalhes
                         </button>
                         {artigo.link && (
@@ -761,20 +732,6 @@ function CourseSection() {
         artigo={artigoToEdit}
       />
 
-      <ArtigoModal
-        isOpen={artigoModalOpen}
-        onClose={closeArtigoModal}
-        artigo={selectedArtigoForModal}
-        onPrevious={navigateToPrevious}
-        onNext={navigateToNext}
-        hasPrevious={selectedArtigoForModal && Object.values(cursoPagination)
-          .flatMap(p => p.loadedArtigos || [])
-          .findIndex(a => a._id === selectedArtigoForModal._id) > 0}
-        hasNext={selectedArtigoForModal && Object.values(cursoPagination)
-          .flatMap(p => p.loadedArtigos || [])
-          .findIndex(a => a._id === selectedArtigoForModal._id) < Object.values(cursoPagination)
-          .flatMap(p => p.loadedArtigos || []).length - 1}
-      />
     </div>
   );
 }

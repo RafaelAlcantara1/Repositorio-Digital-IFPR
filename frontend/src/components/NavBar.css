@@ -382,7 +382,7 @@
 /* Mobile navbar redesign */
 @media (max-width: 768px) {
   .navbar {
-    padding: 0.5rem 1rem;
+    padding: 0.3rem 0.6rem;
     position: relative;
   }
 
@@ -438,9 +438,9 @@
   }
 
   .nav-links a {
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
     border-radius: 6px;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     text-align: center;
     background: rgba(255, 255, 255, 0.05);
     transition: all 0.2s ease;
@@ -458,10 +458,10 @@
   .dropdown-button {
     width: 100%;
     justify-content: center;
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.75rem;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 6px;
-    margin: 0.25rem 0;
+    margin: 0.2rem 0;
   }
 
   .dropdown-content {
@@ -475,9 +475,10 @@
   .dropdown-item {
     color: white;
     text-align: center;
-    padding: 0.6rem 1rem;
+    padding: 0.4rem 0.75rem;
     border-radius: 4px;
     margin: 0.1rem 0;
+    font-size: 0.8rem;
   }
 
   .dropdown-item:hover {
@@ -501,33 +502,33 @@
 
 @media (max-width: 480px) {
   .navbar {
-    padding: 0.4rem 0.8rem;
+    padding: 0.25rem 0.5rem;
   }
 
   .navbar-brand a {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   .mobile-menu-button {
-    font-size: 1.3rem;
-    padding: 0.4rem;
+    font-size: 1.1rem;
+    padding: 0.25rem;
   }
 
   .nav-links {
-    padding: 0.4rem 0.8rem;
+    padding: 0.3rem 0.6rem;
   }
 
   .nav-links a {
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
   }
 
   .dropdown-button {
-    padding: 0.6rem 0.8rem;
+    padding: 0.4rem 0.6rem;
   }
 
   .dropdown-item {
-    padding: 0.5rem 0.8rem;
-    font-size: 0.85rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
   }
 } 
