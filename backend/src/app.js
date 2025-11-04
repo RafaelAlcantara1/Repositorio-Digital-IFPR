@@ -17,11 +17,18 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // Middleware para logging
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  if (req.path === '/api/auth/login' && req.method === 'POST') {
+    console.log('Body recebido:', JSON.stringify({ 
+      username: req.body?.username, 
+      hasPassword: !!req.body?.password,
+      bodyKeys: Object.keys(req.body || {})
+    }));
+  }
   next();
 });
 

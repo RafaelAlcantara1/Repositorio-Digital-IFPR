@@ -57,7 +57,12 @@ export const AuthProvider = ({ children }) => {
       
       return { success: false, error: data.message || 'Credenciais inválidas' };
     } catch (error) {
-      return { success: false, error: 'Erro ao fazer login' };
+      // Captura a mensagem de erro do backend se disponível
+      const errorMessage = error.response?.data?.message 
+        || error.response?.data?.error 
+        || 'Erro ao fazer login. Verifique suas credenciais.';
+      
+      return { success: false, error: errorMessage };
     }
   };
 
