@@ -8,6 +8,7 @@ function ArtigoForm() {
   const [formData, setFormData] = useState({
     titulo: '',
     ano: new Date().getFullYear(),
+    tipo_curso: '',
     id_curso: '',
     palavra_chave: '',
     link: '',
@@ -15,31 +16,75 @@ function ArtigoForm() {
   });
 
   const [cursos, setCursos] = useState([]);
+  const [cursosFiltrados, setCursosFiltrados] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const { updateTotalArtigos } = useArtigos();
 
   useEffect(() => {
-    async function fetchCursos() {
+    async function fetchData() {
       try {
-        console.log('Iniciando busca de cursos...');
-        const data = await cursoService.getAll();
-        console.log('Cursos recebidos:', data);
-        if (Array.isArray(data)) {
-          setCursos(data);
+        const cursosData = await cursoService.getAll();
+        if (Array.isArray(cursosData)) {
+          setCursos(cursosData);
+          
+          try {
+            const ultimoArtigo = await artigoService.getLast();
+            if (ultimoArtigo) {
+              const updates = {};
+              
+              if (ultimoArtigo.ano) {
+                updates.ano = ultimoArtigo.ano;
+              }
+              
+              if (ultimoArtigo.id_curso) {
+                const curso = ultimoArtigo.id_curso;
+                const tipoCurso = typeof curso === 'object' ? curso.tipo_curso : '';
+                const cursoId = typeof curso === 'object' ? curso._id : curso;
+                
+                updates.tipo_curso = tipoCurso;
+                updates.id_curso = cursoId;
+              }
+              
+              if (Object.keys(updates).length > 0) {
+                setFormData(prev => ({
+                  ...prev,
+                  ...updates
+                }));
+              }
+            }
+          } catch (err) {
+            // Ignora se não houver artigos anteriores
+          }
         } else {
-          console.error('Dados recebidos não são um array:', data);
           setError('Formato de dados inválido ao carregar cursos');
         }
       } catch (err) {
-        console.error('Erro detalhado ao carregar cursos:', err);
+        console.error('Erro ao carregar cursos:', err);
         setError('Erro ao carregar a lista de cursos. Por favor, tente novamente.');
       }
     }
 
-    fetchCursos();
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    if (formData.tipo_curso) {
+      const filtrados = cursos.filter(curso => curso.tipo_curso === formData.tipo_curso);
+      setCursosFiltrados(filtrados);
+      
+      if (formData.id_curso) {
+        const cursoValido = filtrados.some(c => c._id === formData.id_curso);
+        if (!cursoValido) {
+          setFormData(prev => ({ ...prev, id_curso: '' }));
+        }
+      }
+    } else {
+      setCursosFiltrados([]);
+      setFormData(prev => ({ ...prev, id_curso: '' }));
+    }
+  }, [formData.tipo_curso, cursos]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,7 +114,6 @@ function ArtigoForm() {
   };
 
   const removeAutor = (index) => {
-    // Não permite remover se há apenas um autor
     if (formData.autores.length <= 1) {
       return;
     }
@@ -87,36 +131,34 @@ function ArtigoForm() {
     setSuccess(false);
 
     try {
-      // Preparar os dados dos autores
       const autoresData = formData.autores.map(autor => ({
         nome: autor.nome,
         tipo: autor.tipo
       }));
 
-      // Preparar os dados do artigo
       const artigoData = {
         titulo: formData.titulo,
         ano: parseInt(formData.ano),
-        id_curso: formData.id_curso, // Não usar parseInt para ObjectId
+        id_curso: formData.id_curso,
         palavra_chave: formData.palavra_chave,
         link: formData.link,
         autores: autoresData
       };
 
-      console.log('Enviando dados do artigo:', artigoData);
       const response = await artigoService.create(artigoData);
-      console.log('Resposta do servidor:', response);
 
       setSuccess(true);
+      
       setFormData({
         titulo: '',
-        ano: new Date().getFullYear(),
-        id_curso: '',
+        ano: formData.ano,
+        tipo_curso: formData.tipo_curso,
+        id_curso: formData.id_curso,
         palavra_chave: '',
         link: '',
         autores: [{ nome: '', tipo: 'orientando' }]
       });
-      updateTotalArtigos(); // Atualiza o total de artigos no contexto
+      updateTotalArtigos();
     } catch (err) {
       console.error('Erro ao cadastrar artigo:', err);
       setError(err.response?.data?.error || 'Erro ao cadastrar artigo. Por favor, tente novamente.');
@@ -160,6 +202,24 @@ function ArtigoForm() {
               max={new Date().getFullYear()}
             />
           </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label htmlFor="tipo_curso">Tipo de Curso *</label>
+            <select
+              id="tipo_curso"
+              name="tipo_curso"
+              value={formData.tipo_curso}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Selecione o tipo</option>
+              <option value="TECNICO_INTEGRADO">Técnico</option>
+              <option value="TECNICO_SUBSEQUENTE">Subsequente</option>
+              <option value="SUPERIOR">Superior</option>
+            </select>
+          </div>
 
           <div className="form-group">
             <label htmlFor="id_curso">Curso *</label>
@@ -169,9 +229,12 @@ function ArtigoForm() {
               value={formData.id_curso}
               onChange={handleChange}
               required
+              disabled={!formData.tipo_curso}
             >
-              <option value="">Selecione o curso</option>
-              {cursos.map(curso => (
+              <option value="">
+                {formData.tipo_curso ? 'Selecione o curso' : 'Primeiro selecione o tipo'}
+              </option>
+              {cursosFiltrados.map(curso => (
                 <option key={curso._id} value={curso._id}>
                   {curso.nome}
                 </option>

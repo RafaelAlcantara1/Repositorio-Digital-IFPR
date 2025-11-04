@@ -1,4 +1,9 @@
-require('dotenv').config();
+// Carrega variáveis de ambiente do config.env (desenvolvimento) ou do sistema (produção)
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ path: require('path').join(__dirname, '../config.env') });
+} else {
+  require('dotenv').config();
+}
 const connectDB = require('./config/db');
 const app = require('./app');
 
@@ -13,7 +18,6 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
       console.log(`📊 MongoDB conectado com sucesso!`);
-      console.log(`🌐 API disponível em: http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error('❌ Erro ao iniciar servidor:', error);

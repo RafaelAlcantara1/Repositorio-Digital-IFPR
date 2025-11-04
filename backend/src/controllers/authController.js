@@ -2,13 +2,15 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'seu_segredo_jwt_aqui'; // Use variável de ambiente
+const JWT_SECRET = process.env.JWT_SECRET || 'seu_segredo_jwt_aqui';
 
+/**
+ * Autentica um usuário e retorna token JWT
+ */
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Buscar usuário
     const user = await User.findOne({ username });
     
     if (!user) {
@@ -18,7 +20,6 @@ const login = async (req, res) => {
       });
     }
 
-    // Verificar senha
     const isPasswordValid = await bcrypt.compare(password, user.password);
     
     if (!isPasswordValid) {
@@ -28,7 +29,6 @@ const login = async (req, res) => {
       });
     }
 
-    // Gerar token JWT
     const token = jwt.sign(
       { 
         id: user._id,

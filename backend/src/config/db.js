@@ -1,14 +1,18 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '../../config.env') });
 
-// Log das variáveis de ambiente
-console.log('Configuração do banco de dados MongoDB:');
-console.log('MONGODB_URI:', process.env.MONGODB_URI || 'mongodb+srv://repositorioUser:mr00bullhave@repositorioifpr.yrpdekc.mongodb.net/');
-
+/**
+ * Conecta ao banco de dados MongoDB
+ * Requer MONGODB_URI nas variáveis de ambiente
+ */
 const connectDB = async () => {
   try {
+    if (!process.env.MONGODB_URI) {
+      throw new Error('MONGODB_URI não está definida nas variáveis de ambiente');
+    }
+
     const conn = await mongoose.connect(
-      process.env.MONGODB_URI || 'mongodb+srv://repositorioUser:mr00bullhave@repositorioifpr.yrpdekc.mongodb.net/repositorio',
+      process.env.MONGODB_URI,
       {
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
@@ -22,7 +26,6 @@ const connectDB = async () => {
   } catch (error) {
     console.error('Erro ao conectar com o MongoDB:', error);
     
-    // Log mais detalhado do erro
     if (error.name === 'MongooseServerSelectionError') {
       console.error('🔍 Possíveis soluções:');
       console.error('1. Verifique se o IP atual está na whitelist do MongoDB Atlas');

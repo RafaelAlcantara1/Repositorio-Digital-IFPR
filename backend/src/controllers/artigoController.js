@@ -2,7 +2,9 @@ const { Artigo, Autor } = require('../models');
 const mongoose = require('mongoose');
 
 const artigoController = {
-  // Listar todos os artigos
+  /**
+   * Lista todos os artigos com autores e curso populados
+   */
   async getAll(req, res) {
     try {
       const artigos = await Artigo.find()
@@ -81,10 +83,9 @@ const artigoController = {
         .populate('autores', 'nome tipo')
         .populate('id_curso', 'nome tipo_curso');
 
-      console.log('Artigo final com autores:', artigoComAutores);
       res.status(201).json(artigoComAutores);
     } catch (error) {
-      console.error('Erro detalhado ao criar artigo:', error);
+      console.error('Erro ao criar artigo:', error);
       res.status(500).json({ 
         error: 'Erro ao criar artigo',
         details: error.message 
@@ -92,12 +93,12 @@ const artigoController = {
     }
   },
 
-  // Atualizar artigo
+  /**
+   * Atualiza um artigo existente
+   * Processa autores individualmente para evitar duplicações
+   */
   async update(req, res) {
     try {
-      console.log('Dados recebidos para atualizar artigo:', req.body);
-      console.log('ID do artigo a ser atualizado:', req.params.id);
-      
       const { titulo, ano, id_curso, palavra_chave, link, autores } = req.body;
       
       const artigo = await Artigo.findById(req.params.id);
@@ -105,72 +106,40 @@ const artigoController = {
         return res.status(404).json({ error: 'Artigo não encontrado' });
       }
 
-      console.log('Artigo encontrado:', artigo);
-
-      // Atualizar campos básicos
       artigo.titulo = titulo || artigo.titulo;
       artigo.ano = ano || artigo.ano;
       
-      console.log('ID do curso recebido:', id_curso);
-      console.log('Tipo do ID do curso:', typeof id_curso);
-      
-                    if (id_curso) {
-         artigo.id_curso = id_curso;
-         console.log('ID do curso atribuído:', id_curso);
-       }
+      if (id_curso) {
+        artigo.id_curso = id_curso;
+      }
       
       artigo.palavra_chave = palavra_chave || artigo.palavra_chave;
       artigo.link = link || artigo.link;
 
-      // Atualizar autores se fornecidos
       if (autores && autores.length > 0) {
-        console.log('Processando autores para atualização:', autores);
-        
-        // Verificar se os autores já existem antes de criar novos
-        const autoresExistentes = await Autor.find({
-          nome: { $in: autores.map(a => a.nome) },
-          tipo: { $in: autores.map(a => a.tipo) }
-        });
-        
-        console.log('Autores existentes encontrados:', autoresExistentes);
-        
-        // Criar apenas autores que não existem
-        const autoresParaCriar = autores.filter(autorData => 
-          !autoresExistentes.some(existente => 
-            existente.nome === autorData.nome && existente.tipo === autorData.tipo
-          )
-        );
-        
-        console.log('Autores para criar:', autoresParaCriar);
-        
-        if (autoresParaCriar.length > 0) {
-          const novosAutores = await Promise.all(
-            autoresParaCriar.map(async (autorData) => {
-              const autor = new Autor({
+        const autoresIds = await Promise.all(
+          autores.map(async (autorData) => {
+            let autorExistente = await Autor.findOne({
+              nome: autorData.nome,
+              tipo: autorData.tipo
+            });
+            
+            if (!autorExistente) {
+              autorExistente = new Autor({
                 nome: autorData.nome,
                 tipo: autorData.tipo
               });
-              const savedAutor = await autor.save();
-              return savedAutor._id;
-            })
-          );
-          
-          // Combinar autores existentes com novos
-          const todosAutores = [
-            ...autoresExistentes.map(a => a._id),
-            ...novosAutores
-          ];
-          artigo.autores = todosAutores;
-        } else {
-          artigo.autores = autoresExistentes.map(a => a._id);
-        }
+              await autorExistente.save();
+            }
+            
+            return autorExistente._id;
+          })
+        );
         
-        console.log('Autores atualizados com sucesso');
+        artigo.autores = autoresIds;
       }
 
-      console.log('Salvando artigo atualizado...');
       const updatedArtigo = await artigo.save();
-      console.log('Artigo salvo com sucesso');
       
       const artigoComAutores = await Artigo.findById(updatedArtigo._id)
         .populate('autores', 'nome tipo')
@@ -178,7 +147,7 @@ const artigoController = {
 
       res.json(artigoComAutores);
     } catch (error) {
-      console.error('Erro detalhado ao atualizar artigo:', error);
+      console.error('Erro ao atualizar artigo:', error);
       res.status(500).json({ 
         error: 'Erro ao atualizar artigo',
         details: error.message 
@@ -186,13 +155,11 @@ const artigoController = {
     }
   },
 
-  // Deletar artigo
+  /**
+   * Deleta um artigo por ID
+   */
   async delete(req, res) {
     try {
-      console.log('Tentando deletar artigo com ID:', req.params.id);
-      console.log('Tipo do ID:', typeof req.params.id);
-      console.log('ID é válido?', req.params.id && req.params.id !== 'undefined');
-      
       if (!req.params.id || req.params.id === 'undefined') {
         return res.status(400).json({ error: 'ID do artigo é obrigatório' });
       }
@@ -203,7 +170,6 @@ const artigoController = {
         return res.status(404).json({ error: 'Artigo não encontrado' });
       }
       
-      console.log('Artigo deletado com sucesso:', artigo._id);
       res.json({ message: 'Artigo deletado com sucesso' });
     } catch (error) {
       console.error('Erro ao deletar artigo:', error);
@@ -211,7 +177,9 @@ const artigoController = {
     }
   },
 
-  // Buscar artigos por curso
+  /**
+   * Busca artigos de um curso específico
+   */
   async getByCurso(req, res) {
     try {
       const artigos = await Artigo.find({ id_curso: req.params.cursoId })
@@ -224,7 +192,9 @@ const artigoController = {
     }
   },
 
-  // Buscar artigos por ano
+  /**
+   * Busca artigos de um ano específico
+   */
   async getByAno(req, res) {
     try {
       const artigos = await Artigo.find({ ano: req.params.ano })
@@ -234,6 +204,27 @@ const artigoController = {
     } catch (error) {
       console.error('Erro ao buscar artigos por ano:', error);
       res.status(500).json({ error: 'Erro ao buscar artigos por ano' });
+    }
+  },
+
+  /**
+   * Retorna o último artigo cadastrado (mais recente)
+   */
+  async getLast(req, res) {
+    try {
+      const ultimoArtigo = await Artigo.findOne()
+        .sort({ _id: -1 })
+        .populate('autores', 'nome tipo')
+        .populate('id_curso', 'nome tipo_curso');
+      
+      if (!ultimoArtigo) {
+        return res.status(404).json({ error: 'Nenhum artigo encontrado' });
+      }
+      
+      res.json(ultimoArtigo);
+    } catch (error) {
+      console.error('Erro ao buscar último artigo:', error);
+      res.status(500).json({ error: 'Erro ao buscar último artigo' });
     }
   }
 };

@@ -4,13 +4,10 @@ const Artigo = require('../models/artigoModel');
 const cursoController = {
   getAllCursos: async (req, res) => {
     try {
-      console.log('Iniciando busca de cursos...');
       const cursos = await Curso.find();
-      console.log('Cursos encontrados:', cursos);
-      
       res.json(cursos);
     } catch (error) {
-      console.error('Erro detalhado ao buscar cursos:', error);
+      console.error('Erro ao buscar cursos:', error);
       res.status(500).json({ error: 'Erro ao buscar cursos' });
     }
   },

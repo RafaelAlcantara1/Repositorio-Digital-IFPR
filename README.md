@@ -1,70 +1,177 @@
-# Getting Started with Create React App
+# 📚 Repositório Digital IFPR - Campus Assis Chateaubriand
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Sistema web para gerenciamento e disponibilização de Projetos Finais de Curso (PFC) desenvolvidos pelos estudantes do IFPR Campus Assis Chateaubriand.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🎯 Sobre o Projeto
 
-### `npm start`
+O Repositório Digital é uma plataforma desenvolvida para armazenar, preservar e disponibilizar os trabalhos finais de curso desenvolvidos pelos estudantes da instituição. O sistema permite que coordenadores gerenciem artigos, autores e cursos, enquanto visitantes podem navegar e acessar o conteúdo de forma organizada.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Tecnologias Utilizadas
 
-### `npm test`
+### **Backend**
+- **Node.js** - Runtime JavaScript no servidor
+- **Express.js** - Framework web para criação da API REST
+- **MongoDB** - Banco de dados NoSQL para armazenamento
+- **Mongoose** - ODM (Object Document Mapper) para MongoDB
+- **JWT** - Autenticação e autorização
+- **bcryptjs** - Criptografia de senhas
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### **Frontend**
+- **React** - Biblioteca JavaScript para construção de interfaces
+- **React Router DOM** - Roteamento de páginas
+- **Axios** - Cliente HTTP para comunicação com a API
+- **React Icons** - Biblioteca de ícones
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ⚙️ Funcionalidades Principais
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### **Para Visitantes**
+- Navegação por cursos organizados por tipo (Técnico, Subsequente, Superior)
+- Busca de artigos por título, palavras-chave ou ano
+- Visualização detalhada de cada artigo
+- Filtros avançados por curso e ano
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### **Para Coordenadores**
+- Sistema de autenticação seguro
+- CRUD completo de artigos, cursos e autores
+- Gerenciamento de usuários
+- Área administrativa protegida
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🔧 Funcionalidades Técnicas Importantes
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### **Backend**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+#### **Sistema de Autenticação**
+- Autenticação via JWT com expiração de 24 horas
+- Criptografia de senhas com bcrypt
+- Validação de credenciais e proteção de rotas
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+#### **Gerenciamento de Artigos**
+- CRUD completo com associação de múltiplos autores
+- População automática de relacionamentos (autores, cursos)
+- Processamento inteligente de autores para evitar duplicações
+- Filtros por curso e ano
 
-## Learn More
+#### **Conexão com Banco de Dados**
+- Conexão com MongoDB Atlas
+- Validação de variáveis de ambiente
+- Tratamento robusto de erros
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### **Frontend**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### **Context API**
+- Gerenciamento global de autenticação
+- Persistência de sessão no localStorage
+- Validação automática de expiração de sessão
 
-### Code Splitting
+#### **Formulário de Cadastro**
+- Seleção em duas etapas: tipo de curso → curso específico
+- Pré-seleção automática do último artigo cadastrado
+- Gerenciamento dinâmico de múltiplos autores
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🚀 Como Executar
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### **Pré-requisitos**
+- Node.js (versão 14 ou superior)
+- MongoDB Atlas
+- npm ou yarn
 
-### Making a Progressive Web App
+### **Backend**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+1. Instalar dependências:
+```bash
+cd backend
+npm install
+```
 
-### Advanced Configuration
+2. Configurar variáveis de ambiente no arquivo `config.env`:
+```env
+MONGODB_URI=sua_string_de_conexao_mongodb
+JWT_SECRET=seu_segredo_jwt_seguro
+PORT=3001
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+3. Iniciar servidor:
+```bash
+npm start
+```
 
-### Deployment
+### **Frontend**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+1. Instalar dependências:
+```bash
+cd frontend
+npm install
+```
 
-### `npm run build` fails to minify
+2. Configurar variável de ambiente (opcional):
+Crie um arquivo `.env` na pasta `frontend` com:
+```env
+REACT_APP_API_URL=https://repositorio-digital-ifpr.onrender.com
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+3. Iniciar aplicação:
+```bash
+npm start
+```
+
+---
+
+## 📝 Scripts Úteis
+
+### **Backend**
+- `npm start` - Inicia o servidor
+- `npm run dev` - Modo desenvolvimento
+- `npm run create-user` - Cria usuário administrador
+- `npm run test-db` - Testa conexão com banco
+- `npm run countUsers` - Conta usuários registrados
+
+---
+
+## 🔐 Segurança
+
+- Senhas criptografadas com bcrypt
+- Autenticação via JWT
+- Rotas protegidas no frontend e backend
+- Variáveis sensíveis em arquivos de ambiente
+- CORS configurável para produção
+
+---
+
+## 📊 Modelos de Dados
+
+- **Artigo**: Título, ano, palavras-chave, link, referência ao curso e autores
+- **Autor**: Nome e tipo (orientador, orientando, coorientador)
+- **Curso**: Nome e tipo (Técnico, Subsequente, Superior)
+- **Usuário**: Username, senha criptografada e role (admin/user)
+
+---
+
+## 🌐 Deploy
+
+### **Variáveis de Ambiente Necessárias**
+
+**Backend:**
+- `MONGODB_URI` - String de conexão do MongoDB
+- `JWT_SECRET` - Chave secreta para JWT
+- `NODE_ENV` - Ambiente (production)
+- `PORT` - Porta do servidor
+- `CORS_ORIGIN` - URL do frontend (opcional)
+
+**Frontend:**
+- `REACT_APP_API_URL` - URL da API backend
+
+---
+
+## 👥 Desenvolvimento
+
+Sistema desenvolvido para o IFPR Campus Assis Chateaubriand como Projeto Final de Curso.

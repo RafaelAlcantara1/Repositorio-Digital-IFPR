@@ -10,8 +10,9 @@ const authRoutes = require('./routes/authRoutes');
 const app = express();
 
 // Configuração do CORS
+const corsOrigin = process.env.CORS_ORIGIN || '*';
 app.use(cors({
-  origin: '*', // Em produção, especifique o domínio do seu frontend
+  origin: corsOrigin,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -61,7 +62,7 @@ app.get('/api/test-db', async (req, res) => {
         host: mongoose.connection.host
       },
       config: {
-        uri: process.env.MONGODB_URI || 'mongodb+srv://repositorioUser:mr00bullhave@repositorioifpr.yrpdekc.mongodb.net/repositorio'
+        uri: process.env.MONGODB_URI ? 'Configurado' : 'Não configurado'
       },
       timestamp: new Date().toISOString()
     });

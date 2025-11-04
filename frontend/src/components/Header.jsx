@@ -11,7 +11,7 @@ function Header() {
       </div>
       <div className="title">
         <h1>Repositório Digital IFPR</h1>
-        <span>Trabalhos Finais de Curso - Campus Assis Chateaubriand</span>
+        <span>Projetos Finais de Curso - Campus Assis Chateaubriand</span>
       </div>
     </header>
   );

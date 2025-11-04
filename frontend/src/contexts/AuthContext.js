@@ -9,20 +9,17 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Verificar se há um usuário salvo no localStorage
     const storedUser = localStorage.getItem('user');
     const storedToken = localStorage.getItem('token');
     const lastLogin = localStorage.getItem('lastLogin');
 
     if (storedUser && storedToken && lastLogin) {
-      // Verificar se a sessão expirou
       const now = new Date().getTime();
       const loginTime = new Date(lastLogin).getTime();
       
       if (now - loginTime < AUTH_CONFIG.sessionTimeout) {
         setUser(JSON.parse(storedUser));
       } else {
-        // Sessão expirada, limpar dados
         localStorage.removeItem('user');
         localStorage.removeItem('token');
         localStorage.removeItem('lastLogin');
@@ -31,18 +28,17 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  /**
+   * Autentica o usuário e salva token no localStorage
+   */
   const login = async (username, password) => {
     try {
-      console.log('Tentando login com:', { username, password });
-      
-      // Fazer requisição para a API de autenticação usando a instância api configurada
       const response = await api.post('/api/auth/login', {
         username,
         password
       });
 
       const data = response.data;
-      console.log('Resposta do servidor:', data);
 
       if (data.success) {
         const userData = {
@@ -51,7 +47,6 @@ export const AuthProvider = ({ children }) => {
           lastLogin: new Date().toISOString()
         };
         
-        // Salvar dados do usuário e token
         localStorage.setItem('user', JSON.stringify(userData));
         localStorage.setItem('token', data.data.token);
         localStorage.setItem('lastLogin', new Date().toISOString());
@@ -62,7 +57,6 @@ export const AuthProvider = ({ children }) => {
       
       return { success: false, error: data.message || 'Credenciais inválidas' };
     } catch (error) {
-      console.error('Erro no login:', error);
       return { success: false, error: 'Erro ao fazer login' };
     }
   };
@@ -74,10 +68,12 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  /**
+   * Verifica se o usuário está autenticado e se a sessão não expirou
+   */
   const isAuthenticated = () => {
     if (!user) return false;
 
-    // Verificar se a sessão expirou
     const lastLogin = localStorage.getItem('lastLogin');
     if (!lastLogin) return false;
 
