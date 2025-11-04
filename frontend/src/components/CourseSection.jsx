@@ -595,15 +595,98 @@ function CourseSection() {
     );
   };
 
+  // Frases sobre a importância de repositórios
+  const frasesRepositorios = [
+    "Cada trabalho publicado aqui é uma semente plantada para o futuro da ciência.",
+    "Grandes descobertas começam com a simples decisão de compartilhar conhecimento.",
+    "O saber que não é compartilhado é como uma biblioteca fechada ao público.",
+    "Suas pesquisas podem inspirar novas gerações de estudantes e pesquisadores.",
+    "A ciência avança quando ideias se encontram e se conectam.",
+    "Trabalhos acadêmicos são pontes que conectam passado, presente e futuro.",
+    "Todo artigo é uma janela para um mundo de possibilidades e descobertas.",
+    "A democratização do saber transforma vidas e constrói uma sociedade melhor.",
+    "Suas contribuições acadêmicas podem ser a resposta que alguém está procurando.",
+    "Repositórios são como museus digitais: preservam o legado intelectual das instituições.",
+    "Compartilhar é construir pontes entre diferentes áreas do conhecimento.",
+    "Cada pesquisa publicada enriquece o patrimônio científico da humanidade.",
+    "O conhecimento só tem valor quando é acessível e compartilhado.",
+    "Seus trabalhos podem ser a base para inovações que ainda nem imaginamos.",
+    "Repositórios transformam informação isolada em conhecimento coletivo.",
+    "A visibilidade de suas pesquisas amplifica seu impacto na sociedade.",
+    "Preservar trabalhos acadêmicos é garantir que o progresso não se perca.",
+    "Indexação e organização facilitam que alguém encontre exatamente o que precisa.",
+    "Colaboração acadêmica é fortalecida quando informações estão facilmente acessíveis.",
+    "Seu trabalho pode ser a inspiração que faltava para o próximo grande avanço."
+  ];
+
+  // Estado para gerenciar a frase atual e o índice
+  const [fraseAtual, setFraseAtual] = useState('');
+  const [indiceFrase, setIndiceFrase] = useState(0);
+  const [frasesEmbaralhadas, setFrasesEmbaralhadas] = useState([]);
+  const [fadeClass, setFadeClass] = useState('');
+
+  // Função para embaralhar array
+  const embaralharArray = (array) => {
+    const novoArray = [...array];
+    for (let i = novoArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [novoArray[i], novoArray[j]] = [novoArray[j], novoArray[i]];
+    }
+    return novoArray;
+  };
+
+  // Efeito para gerenciar a rotação de frases durante o carregamento
+  useEffect(() => {
+    if (loading) {
+      // Embaralhar frases quando começar a carregar
+      const frasesEmbaralhadas = embaralharArray(frasesRepositorios);
+      setFrasesEmbaralhadas(frasesEmbaralhadas);
+      setIndiceFrase(0);
+      setFraseAtual(frasesEmbaralhadas[0]);
+      setFadeClass('fade-in');
+
+      let timeoutId;
+      // Intervalo para trocar as frases a cada 5 segundos (tempo suficiente para leitura)
+      const intervalo = setInterval(() => {
+        // Fade out
+        setFadeClass('fade-out');
+        
+        timeoutId = setTimeout(() => {
+          setIndiceFrase((indiceAtual) => {
+            const proximoIndice = (indiceAtual + 1) % frasesEmbaralhadas.length;
+            setFraseAtual(frasesEmbaralhadas[proximoIndice]);
+            setFadeClass('fade-in');
+            return proximoIndice;
+          });
+        }, 300);
+      }, 5000);
+
+      return () => {
+        clearInterval(intervalo);
+        if (timeoutId) clearTimeout(timeoutId);
+      };
+    } else {
+      // Limpar estados quando não está mais carregando
+      setFraseAtual('');
+      setIndiceFrase(0);
+      setFrasesEmbaralhadas([]);
+      setFadeClass('');
+    }
+  }, [loading]);
+
   if (loading) {
     return (
       <div className={styles.loading}>
         <div className={styles.loadingContent}>
           <div className={styles.loadingText}>Carregando artigos</div>
+          <div className={styles.serverStatus}>Servidor está ligando</div>
           <div className={styles.booksAnimation}>
             <div className={`${styles.book} ${styles.book1}`}>📖</div>
             <div className={`${styles.book} ${styles.book2}`}>📖</div>
             <div className={`${styles.book} ${styles.book3}`}>📖</div>
+          </div>
+          <div className={styles.fraseContainer}>
+            <div className={`${styles.fraseAtual} ${fadeClass ? styles[fadeClass] : ''}`}>{fraseAtual}</div>
           </div>
         </div>
       </div>
