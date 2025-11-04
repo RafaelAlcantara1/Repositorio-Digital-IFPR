@@ -2,7 +2,11 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'seu_segredo_jwt_aqui';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET não está definida nas variáveis de ambiente');
+}
 
 /**
  * Autentica um usuário e retorna token JWT

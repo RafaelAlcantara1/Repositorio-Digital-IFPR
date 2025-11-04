@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-require('dotenv').config({ path: require('path').join(__dirname, '../../config.env') });
+// Nota: Este script usa variáveis de ambiente do sistema
+// Configure MONGODB_URI antes de executar
 
 async function testConnection() {
   try {

@@ -49,11 +49,13 @@ app.get('/', (req, res) => {
 });
 
 // Rotas da API
+console.log('Registrando rotas...');
 app.use('/api/artigos', artigoRoutes);
 app.use('/api/autores', autorRoutes);
 app.use('/api/cursos', cursoRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+console.log('Rotas registradas com sucesso!');
 
 // Rota de teste do banco de dados
 app.get('/api/test-db', async (req, res) => {
@@ -82,6 +84,12 @@ app.get('/api/test-db', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   }
+});
+
+// Rota de teste de autenticação
+app.post('/api/auth/test', (req, res) => {
+  console.log('Rota de teste de auth chamada');
+  res.json({ message: 'Rota de auth funcionando!', body: req.body });
 });
 
 // Rota de teste

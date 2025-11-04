@@ -1,9 +1,4 @@
-// Carrega variáveis de ambiente do config.env (desenvolvimento) ou do sistema (produção)
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config({ path: require('path').join(__dirname, '../config.env') });
-} else {
-  require('dotenv').config();
-}
+// Usa variáveis de ambiente do sistema (configuradas no Render ou via sistema)
 const connectDB = require('./config/db');
 const app = require('./app');
 
