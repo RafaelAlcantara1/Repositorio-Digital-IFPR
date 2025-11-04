@@ -10,12 +10,29 @@ const authRoutes = require('./routes/authRoutes');
 const app = express();
 
 // Configuração do CORS
-const corsOrigin = process.env.CORS_ORIGIN || '*';
-app.use(cors({
-  origin: corsOrigin,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+const corsOrigin = process.env.CORS_ORIGIN;
+
+// Se CORS_ORIGIN não estiver configurado, permitir todas as origens
+const corsOptions = corsOrigin 
+  ? {
+      origin: corsOrigin.includes(',') 
+        ? corsOrigin.split(',').map(o => o.trim())
+        : corsOrigin,
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      exposedHeaders: ['Content-Type', 'Authorization']
+    }
+  : {
+      origin: true, // Permite todas as origens
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      exposedHeaders: ['Content-Type', 'Authorization']
+    };
+
+app.use(cors(corsOptions));
+console.log('CORS configurado:', corsOrigin ? corsOptions.origin : 'Todas as origens permitidas');
 
 app.use(express.json({ limit: '10mb' }));
 

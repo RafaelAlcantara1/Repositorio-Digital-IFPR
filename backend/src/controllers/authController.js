@@ -19,19 +19,35 @@ const login = async (req, res) => {
     
     const { username, password } = req.body;
 
-    console.log('Tentativa de login:', { username, hasPassword: !!password });
+    // Normalizar username (remover espaços e converter para string)
+    const normalizedUsername = String(username).trim();
 
-    if (!username || !password) {
+    console.log('Tentativa de login:', { 
+      username: normalizedUsername, 
+      originalLength: username?.length,
+      hasPassword: !!password 
+    });
+
+    if (!normalizedUsername || !password) {
       return res.status(400).json({
         success: false,
         message: 'Username e senha são obrigatórios'
       });
     }
 
-    const user = await User.findOne({ username });
+    // Listar todos os usuários para debug (apenas em caso de erro)
+    const allUsers = await User.find({}, 'username');
+    console.log('Usuários no banco:', allUsers.map(u => u.username));
+    console.log('Buscando usuário:', normalizedUsername);
+
+    // Buscar usuário (case-insensitive)
+    const user = await User.findOne({ 
+      username: { $regex: new RegExp(`^${normalizedUsername}$`, 'i') }
+    });
     
     if (!user) {
-      console.log('Usuário não encontrado:', username);
+      console.log('Usuário não encontrado:', normalizedUsername);
+      console.log('Usuários disponíveis:', allUsers.map(u => `"${u.username}"`).join(', '));
       return res.status(401).json({
         success: false,
         message: 'Usuário ou senha inválidos'
