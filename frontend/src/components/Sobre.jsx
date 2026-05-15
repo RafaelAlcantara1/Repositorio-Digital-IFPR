@@ -49,7 +49,7 @@ function Sobre() {
               <img src={matheusImg} alt="Foto do Matheus" />
             </div>
             <h3>Matheus Lucas da Palma Oliveira</h3>
-            <p>Estudante de Informática</p>
+            <p>Técnico de Informática</p>
             <div className="autor-email">
               <FaEnvelope className="email-icon" />
               <a href="mailto:matheuslucasteu57@gmail.com">matheuslucasteu57@gmail.com</a>
@@ -61,7 +61,7 @@ function Sobre() {
               <img src={rafaelImg} alt="Foto do Rafael" />
             </div>
             <h3>Rafael Henrique Rodrigues de Alcantara</h3>
-            <p>Estudante de Informática</p>
+            <p>Técnico de Informática</p>
             <div className="autor-email">
               <FaEnvelope className="email-icon" />
               <a href="mailto:rafinha009990@gmail.com">rafinha009990@gmail.com</a>
